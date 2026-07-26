@@ -1,5 +1,6 @@
 ---
 layout: default
+title: From Circuits to Results
 ---
 
 ## Presenters
