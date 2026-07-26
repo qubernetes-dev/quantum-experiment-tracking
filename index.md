@@ -1,38 +1,72 @@
 ---
 layout: default
-title: Home
 ---
 
-<div class="hero">
-  <img src="{{ '/assets/images/hero.svg' | relative_url }}" alt="" class="hero-graphic" />
-  <h1>From Circuits to Results</h1>
-  <p class="hero-subtitle">Systematic Experiment Tracking in Quantum Workflows</p>
+# From Circuits to Results: Systematic Experiment Tracking in Quantum Workflows
+
+## Presenters
+
+| Name | Affiliation | Email |
+|---|---|---|
+| **Vlad Stirbu** (Lead Presenter) | University of Jyväskylä, Jyväskylä, Finland | [vlad.a.stirbu@jyu.fi](mailto:vlad.a.stirbu@jyu.fi) |
+| Otso Kinanen | University of Jyväskylä, Jyväskylä, Finland | [otso.j.r.kinanen@jyu.fi](mailto:otso.j.r.kinanen@jyu.fi) |
+| Valter Uotila | University of Helsinki, Helsinki, Finland | [valter.uotila@helsinki.fi](mailto:valter.uotila@helsinki.fi) |
+| Oskari Kerppo | Quanscient Oy, Tampere, Finland | [oskari.kerppo@quanscient.com](mailto:oskari.kerppo@quanscient.com) |
+
+## Abstract
+
+The increased availability of quantum computing hardware and the improvements in quantum workloads execution quality leads more researchers and developers to start their journey in quantum software and algorithm development.
+
+Since quantum computing is a new and rapidly evolving paradigm, quantum workflows generate critical data across multiple stages of development and execution, including circuit design, compilation, and hardware execution. Without structured experiment tracking processes and tools, managing this data becomes nearly impossible, limiting the ability of developers to reason about their work, support reproducibility, and make informed design decisions.
+
+In contrast, classical software engineering, and machine learning in particular, has developed mature practices and tooling for data provenance, logging, and experiment tracking. These approaches enable efficient development and systematic use of recorded data for analysis and decision-making. Transferring such practices into quantum computing offers a clear path toward improving development processes, enhancing reproducibility, and enabling more rigorous and scalable experimentation.
+
+This tutorial introduces experiment tracking for quantum software developers. The sessions will start by explaining the crucial data points to log, how to use that data to improve the development process and software quality, and then move into a demonstration of selected use cases using MLflow to support the process. By the end of the tutorial, attendees will have a clear understanding of data provenance in quantum computing, an understanding of how that experiment-tracking data can be leveraged in the development process, and a basic level of knowledge of the use of the MLflow experiment-tracking tool.
+
+## Agenda
+
+### Session 1 — Foundations (90 minutes)
+
+**Part 1: Introduction to Experiment Tracking in Quantum (~30 min)**
+
+- Introducing experiment tracking, theory and purpose
+- Quantum software provenance and special characteristics considering experiment tracking
+- Core concepts of experiment tracking: runs, parameters, metrics, artifacts
+
+**Part 2: Setting up MLflow for Quantum Software Development (~30 min)**
+
+- Setting up MLflow server, introducing the user interface
+- Introductory code for the tracking process, reflected to concepts introduced in Part 1 of the session
+- Reading and analysing the tracked data
+
+**Part 3: Experiment Tracking Concepts for Quantum (~30 min)**
+
+- Detailed data to track in quantum: circuit, compilation and transpilation, target quantum hardware, classical simulation details, inputs and output
+- Designing a quantum experiment tracking schema
+
+<div class="callout" markdown="1">
+Session 1 presented by Vlad Stirbu and Otso Kinanen.
 </div>
 
-Welcome! This tutorial introduces a practical, low-overhead approach to tracking
-quantum computing experiments — from circuit design to final results — so that
-your work stays reproducible as it grows in scale and complexity.
+### Session 2 — Applied Practice (90 minutes)
 
-## What you will learn
+**Part 4: QML Case: Quantum Reservoir Computing (~35 min)**
 
-- Why systematic experiment tracking matters for quantum workflows
-- How to set up a minimal, dependency-free tracking environment
-- How to record circuits, parameters, backends, and results consistently
-- How to compare runs across simulators and real quantum hardware
+- Introduction and motivation on quantum reservoir computing, the selected QML paradigm
+- Selecting the learning task and constructing data
+- Presenting experiment tracking at different stages: preprocessing, execution on noisy hardware, error mitigation, and classical postprocessing
+- Discussing how experiment tracking supports quantum machine learning pipelines and the particular challenges and opportunities the quantum domain offers
 
-## Contents
+**Part 5: Quantum-Powered CFD Simulations (~35 min)**
 
-- [Agenda]({{ '/agenda/' | relative_url }})
-- Tutorials
-  - [Installation]({{ '/tutorials/installation/' | relative_url }})
-  - [Running Your First Tracked Experiment]({{ '/tutorials/first-experiment/' | relative_url }})
+- Quantum algorithms for CFD problems
+- Practical considerations with quantum algorithms: runtime, data initialization, data collection and post-processing
+- Experiment tracking as a tool for multi-stage algorithms: validating algorithm initialization, verifying data readouts
 
-## Who this is for
+**Part 6: Discussion & Outlook (~20 min)**
 
-Researchers and students running quantum circuits who want a lightweight way to
-keep experiments organized, without adopting a heavyweight MLOps stack.
+- Questions and discussion
 
----
-
-Found an issue or want to contribute a section? Open an issue or pull request on
-the [GitHub repository]({{ site.github.repository_url | default: "https://github.com/" }}).
+<div class="callout" markdown="1">
+Session 2 presented by Valter Uotila and Oskari Kerppo, respectively. Discussion will be attended by all presenters.
+</div>

@@ -9,34 +9,18 @@ theme — no local Ruby install, gems, or build step required. Every push to
 
 ```text
 .
-├── _config.yml                  # site title, description, nav order
-├── index.md                     # homepage
-├── agenda.md                    # tutorial agenda
-├── tutorials/
-│   ├── installation.md
-│   └── first-experiment.md
+├── _config.yml            # site title and description
+├── index.md               # the entire site: title, presenters, abstract, agenda
 ├── assets/
-│   ├── css/style.scss           # custom skin on top of minima
-│   └── images/hero.svg          # homepage graphic
+│   └── css/style.scss     # custom skin on top of minima
 └── README.md
 ```
 
 ## Editing content
 
-Every page is plain Markdown with a small YAML front matter block, e.g.:
-
-```markdown
----
-layout: page
-title: My New Page
-permalink: /my-new-page/
----
-
-Page content goes here.
-```
-
-To add a page to the top navigation bar, list its path under `header_pages`
-in [`_config.yml`](_config.yml).
+Everything lives in [`index.md`](index.md) as plain Markdown — edit the
+presenters table, abstract, or agenda sections directly. It's a single page
+on purpose; add more `.md` files later only if the site outgrows this.
 
 ## Local preview (optional)
 

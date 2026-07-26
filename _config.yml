@@ -1,16 +1,8 @@
 title: From Circuits to Results
 description: >-
   Systematic Experiment Tracking in Quantum Workflows —
-  a tutorial on reproducible, well-documented quantum computing experiments.
+  a tutorial for quantum software developers.
 theme: minima
-
-# Pages shown in the top navigation bar, in this order.
-header_pages:
-  - agenda.md
-  - tutorials/installation.md
-  - tutorials/first-experiment.md
-
-show_excerpts: false
 markdown: kramdown
 
 # These files/folders are ignored when GitHub Pages builds the site.

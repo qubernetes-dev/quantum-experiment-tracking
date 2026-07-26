@@ -101,31 +101,6 @@ a:hover {
   border-bottom-color: var(--jyu-accent);
 }
 
-/* ---------- Hero (index page) ---------- */
-
-.hero {
-  text-align: center;
-  padding: 1.5em 0 1em;
-  margin-bottom: 1em;
-  border-bottom: 1px solid #e3ddd0;
-}
-
-.hero-graphic {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 0.5em;
-}
-
-.hero h1 {
-  margin-bottom: 0.15em;
-}
-
-.hero-subtitle {
-  font-size: 1.15em;
-  color: var(--jyu-green);
-  margin-top: 0;
-}
-
 /* ---------- Callout boxes ---------- */
 
 .callout {
