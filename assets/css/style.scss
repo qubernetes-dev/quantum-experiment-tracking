@@ -1,0 +1,181 @@
+---
+---
+
+// Custom skin layered on top of the stock "minima" theme.
+// Palette and type choices are inspired by the University of Jyväskylä
+// (jyu.fi): deep navy + warm gold/terracotta accents, a serif for headings
+// paired with Lato for body text.
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@400;700&display=swap');
+
+@import "minima";
+
+:root {
+  --jyu-navy:   #002957;
+  --jyu-green:  #234923;
+  --jyu-gold:   #c29a5b;
+  --jyu-accent: #bb501e;
+  --jyu-cream:  #f1e9dc;
+  --jyu-grey:   #f6f6f6;
+  --jyu-text:   #222222;
+}
+
+body {
+  font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
+  color: var(--jyu-text);
+}
+
+.wrapper {
+  max-width: 1000px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Merriweather", Georgia, "Times New Roman", serif;
+  color: var(--jyu-navy);
+}
+
+/* ---------- Header ---------- */
+
+.site-header {
+  background-color: var(--jyu-navy);
+  border-top: 4px solid var(--jyu-accent);
+  border-bottom: none;
+}
+
+.site-title,
+.site-title:visited {
+  color: #ffffff !important;
+  font-family: "Merriweather", Georgia, serif;
+  font-weight: 700;
+}
+
+.site-nav .page-link,
+.site-nav .page-link:visited {
+  color: #f2f2f2 !important;
+  font-weight: 400;
+}
+
+.site-nav .page-link:hover {
+  color: var(--jyu-gold) !important;
+  text-decoration: none;
+}
+
+.site-nav .menu-icon > svg {
+  fill: #ffffff;
+}
+
+@media screen and (max-width: 600px) {
+  .site-nav {
+    background-color: var(--jyu-navy);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .site-nav .page-link {
+    color: #f2f2f2;
+    display: block;
+  }
+}
+
+/* ---------- Links ---------- */
+
+a {
+  color: var(--jyu-navy);
+}
+
+a:visited {
+  color: var(--jyu-navy);
+}
+
+a:hover {
+  color: var(--jyu-accent);
+}
+
+.post-content a,
+.page-content a {
+  border-bottom: 1px solid var(--jyu-gold);
+  text-decoration: none;
+}
+
+.post-content a:hover,
+.page-content a:hover {
+  border-bottom-color: var(--jyu-accent);
+}
+
+/* ---------- Hero (index page) ---------- */
+
+.hero {
+  text-align: center;
+  padding: 1.5em 0 1em;
+  margin-bottom: 1em;
+  border-bottom: 1px solid #e3ddd0;
+}
+
+.hero-graphic {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 0.5em;
+}
+
+.hero h1 {
+  margin-bottom: 0.15em;
+}
+
+.hero-subtitle {
+  font-size: 1.15em;
+  color: var(--jyu-green);
+  margin-top: 0;
+}
+
+/* ---------- Callout boxes ---------- */
+
+.callout {
+  background-color: var(--jyu-cream);
+  border-left: 4px solid var(--jyu-accent);
+  padding: 0.9em 1.25em;
+  margin: 1.5em 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.callout p:last-child {
+  margin-bottom: 0;
+}
+
+blockquote {
+  border-left: 4px solid var(--jyu-gold);
+  color: #444444;
+}
+
+/* ---------- Tables ---------- */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1.5em;
+}
+
+table th {
+  background-color: var(--jyu-navy);
+  color: #ffffff;
+  text-align: left;
+  padding: 0.5em 0.75em;
+}
+
+table td {
+  padding: 0.5em 0.75em;
+  border-bottom: 1px solid #dddddd;
+}
+
+table tr:nth-child(even) {
+  background-color: var(--jyu-cream);
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  background-color: var(--jyu-grey);
+  border-top: 4px solid var(--jyu-gold);
+}
+
+.site-footer a {
+  color: var(--jyu-navy);
+}
