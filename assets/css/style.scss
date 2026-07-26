@@ -154,3 +154,9 @@ table tr:nth-child(even) {
 .site-footer a {
   color: var(--jyu-navy);
 }
+
+/* minima renders the site title twice in the footer (a heading, then again
+   in the contact list) — keep only the contact-list copy. */
+.site-footer .footer-heading {
+  display: none;
+}

@@ -2,16 +2,31 @@
 layout: default
 ---
 
-# From Circuits to Results: Systematic Experiment Tracking in Quantum Workflows
+# From Circuits to Results
+
+**Systematic Experiment Tracking in Quantum Workflows**
 
 ## Presenters
 
-| Name | Affiliation | Email |
-|---|---|---|
-| **Vlad Stirbu** (Lead Presenter) | University of Jyväskylä, Jyväskylä, Finland | [vlad.a.stirbu@jyu.fi](mailto:vlad.a.stirbu@jyu.fi) |
-| Otso Kinanen | University of Jyväskylä, Jyväskylä, Finland | [otso.j.r.kinanen@jyu.fi](mailto:otso.j.r.kinanen@jyu.fi) |
-| Valter Uotila | University of Helsinki, Helsinki, Finland | [valter.uotila@helsinki.fi](mailto:valter.uotila@helsinki.fi) |
-| Oskari Kerppo | Quanscient Oy, Tampere, Finland | [oskari.kerppo@quanscient.com](mailto:oskari.kerppo@quanscient.com) |
+**Vlad Stirbu** (Lead Presenter)<br>
+*University of Jyväskylä*<br>
+Jyväskylä, Finland<br>
+vlad.a.stirbu@jyu.fi
+
+**Otso Kinanen**<br>
+*University of Jyväskylä*<br>
+Jyväskylä, Finland<br>
+otso.j.r.kinanen@jyu.fi
+
+**Valter Uotila**<br>
+*University of Helsinki*<br>
+Helsinki, Finland<br>
+valter.uotila@helsinki.fi
+
+**Oskari Kerppo**<br>
+*Quanscient Oy*<br>
+Tampere, Finland<br>
+oskari.kerppo@quanscient.com
 
 ## Abstract
 
