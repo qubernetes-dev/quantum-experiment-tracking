@@ -5,6 +5,10 @@
 // Palette and type choices are inspired by the University of Jyväskylä
 // (jyu.fi): deep navy + warm gold/terracotta accents, a serif for headings
 // paired with Lato for body text.
+//
+// NOTE: minima's head.html links "/assets/main.css" specifically, so this
+// override must live at assets/main.scss (not assets/css/style.scss) or it
+// is silently never loaded.
 
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@400;700&display=swap');
 
@@ -34,46 +38,27 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--jyu-navy);
 }
 
-/* ---------- Header ---------- */
+/* ---------- Header (see _includes/header.html) ---------- */
 
 .site-header {
   background-color: var(--jyu-navy);
   border-top: 4px solid var(--jyu-accent);
   border-bottom: none;
+  padding: 1.2em 0;
 }
 
-.site-title,
-.site-title:visited {
+.site-title {
   color: #ffffff !important;
   font-family: "Merriweather", Georgia, serif;
   font-weight: 700;
+  font-size: 1.6rem;
+  line-height: 1.3;
 }
 
-.site-nav .page-link,
-.site-nav .page-link:visited {
-  color: #f2f2f2 !important;
-  font-weight: 400;
-}
-
-.site-nav .page-link:hover {
-  color: var(--jyu-gold) !important;
-  text-decoration: none;
-}
-
-.site-nav .menu-icon > svg {
-  fill: #ffffff;
-}
-
-@media screen and (max-width: 600px) {
-  .site-nav {
-    background-color: var(--jyu-navy);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-  }
-
-  .site-nav .page-link {
-    color: #f2f2f2;
-    display: block;
-  }
+.site-tagline {
+  margin: 0.3em 0 0;
+  color: #d7dee8;
+  font-size: 1.05rem;
 }
 
 /* ---------- Links ---------- */
@@ -99,6 +84,31 @@ a:hover {
 .post-content a:hover,
 .page-content a:hover {
   border-bottom-color: var(--jyu-accent);
+}
+
+/* ---------- Presenters (two rows of two) ---------- */
+
+.presenters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 2.5em;
+  row-gap: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.presenter {
+  border-left: 3px solid var(--jyu-gold);
+  padding-left: 0.9em;
+}
+
+.presenter p {
+  margin: 0;
+}
+
+@media screen and (max-width: 600px) {
+  .presenters {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ---------- Callout boxes ---------- */
@@ -144,19 +154,15 @@ table tr:nth-child(even) {
   background-color: var(--jyu-cream);
 }
 
-/* ---------- Footer ---------- */
+/* ---------- Footer (see _includes/footer.html) ---------- */
 
 .site-footer {
   background-color: var(--jyu-grey);
   border-top: 4px solid var(--jyu-gold);
 }
 
-.site-footer a {
+.footer-title {
+  margin: 0;
+  font-weight: 700;
   color: var(--jyu-navy);
-}
-
-/* minima renders the site title twice in the footer (a heading, then again
-   in the contact list) — keep only the contact-list copy. */
-.site-footer .footer-heading {
-  display: none;
 }

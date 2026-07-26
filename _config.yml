@@ -1,7 +1,8 @@
 title: From Circuits to Results
+tagline: Systematic Experiment Tracking in Quantum Workflows
 description: >-
-  Systematic Experiment Tracking in Quantum Workflows —
-  a tutorial for quantum software developers.
+  A tutorial for quantum software developers on systematic experiment
+  tracking in quantum workflows.
 theme: minima
 markdown: kramdown
 
