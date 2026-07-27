@@ -5,6 +5,8 @@ description: >-
   tracking in quantum workflows.
 theme: minima
 markdown: kramdown
+baseurl: ""
+url: "https://qce26-tutorial.qubernetes.dev"
 
 # These files/folders are ignored when GitHub Pages builds the site.
 exclude:
