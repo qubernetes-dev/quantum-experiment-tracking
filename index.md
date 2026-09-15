@@ -51,7 +51,7 @@ This tutorial introduces experiment tracking for quantum software developers. Th
 
 ### Session 1 — Foundations (90 minutes)
 
-**Part 1: Introduction to Experiment Tracking in Quantum (~30 min)**
+**Part 1: Introduction to Experiment Tracking in Quantum (~30 min)** [slides](/slides/20260914-QCE-Tutorial.pdf)
 
 - Introducing experiment tracking, theory and purpose
 - Quantum software provenance and special characteristics considering experiment tracking
@@ -81,7 +81,7 @@ Session 1 presented by Vlad Stirbu and Otso Kinanen.
 - Presenting experiment tracking at different stages: preprocessing, execution on noisy hardware, error mitigation, and classical postprocessing
 - Discussing how experiment tracking supports quantum machine learning pipelines and the particular challenges and opportunities the quantum domain offers
 
-**Part 5: Quantum-Powered CFD Simulations (~35 min)**
+**Part 5: Quantum-Powered CFD Simulations (~35 min)** [slides](/slides/QCFD.pdf), [notebook](/notebooks/quanscient-tutorial.ipynb)
 
 - Quantum algorithms for CFD problems
 - Practical considerations with quantum algorithms: runtime, data initialization, data collection and post-processing
