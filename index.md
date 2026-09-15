@@ -57,13 +57,13 @@ This tutorial introduces experiment tracking for quantum software developers. Th
 - Quantum software provenance and special characteristics considering experiment tracking
 - Core concepts of experiment tracking: runs, parameters, metrics, artifacts
 
-**Part 2: Setting up MLflow for Quantum Software Development (~30 min)**
+**Part 2: Setting up MLflow for Quantum Software Development (~30 min)** [slides and notebook](https://github.com/qubernetes-dev/mlflow-quantum-tutorial)
 
 - Setting up MLflow server, introducing the user interface
 - Introductory code for the tracking process, reflected to concepts introduced in Part 1 of the session
 - Reading and analysing the tracked data
 
-**Part 3: Experiment Tracking Concepts for Quantum (~30 min)**
+**Part 3: Experiment Tracking Concepts for Quantum (~30 min)** [slides and notebook](https://github.com/qubernetes-dev/mlflow-quantum-tutorial)
 
 - Detailed data to track in quantum: circuit, compilation and transpilation, target quantum hardware, classical simulation details, inputs and output
 - Designing a quantum experiment tracking schema
