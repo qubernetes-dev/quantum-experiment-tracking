@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #f6f2ec; }
+    a { color: #28697a; text-decoration: none; border-bottom: 1px solid rgba(40,105,122,.35); }
+    a:hover { color: #1b5060; border-bottom-color: #1b5060; }
+    ::-webkit-scrollbar { width: 9px; height: 9px; }
+    ::-webkit-scrollbar-thumb { background: #d7cdc1; border-radius: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+  </style>
+  <script src="tex.js"></script>
+  <script src="qrc-engine.js"></script>
+  <script src="tracking.js"></script>
+  <script src="pipeline.js"></script>
+  <script src="widgets.js"></script>
+</helmet>
+
+<x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="1920" height="1080" hint-size="100%,100%" data-uneditable="">
+
+  <section data-label="Title" data-screen-label="01" data-speaker-notes="Hello everyone, welcome to the second session of this tutorial From Circuits to Results: Systematic Experiment Tracking in Quantum Workflows. My name is Valter Uotila and I recently started working as a postdoctoral researcher at TU Delft. Anyway, this is part of my previous project when I was still doing my PhD at the University of Helsinki.
+
+Big thanks to the team, especially to Vlad who invited me to join the team." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:96px 110px;display:flex;flex-direction:column;justify-content:space-between;" data-om-slide-id="1a5523a3">
+    <div style="font:600 27px/1.2 'JetBrains Mono',monospace;letter-spacing:.17em;text-transform:uppercase;color:#28697a;">Session 2 · Part 4 · 35 minutes</div>
+    <div style="display: flex; flex-direction: column; gap: 32px;">
+      <h1 style="margin: 0; font: 600 127px/0.98 'Source Serif 4',Georgia,serif; letter-spacing: -0.012em; max-width: 1500px; text-wrap: balance; max-width:1600px; color: #000000">Experiment tracking case study in QML:</h1>
+      <h1 style="margin: 0; font: 600 127px/0.98 'Source Serif 4',Georgia,serif; letter-spacing: -0.012em; max-width: 1500px; text-wrap: balance; max-width:1600px; color: #28697A">Quantum reservoir computing</h1><p style="margin: 0; font: 400 32px/1.5 'IBM Plex Sans',system-ui,sans-serif; color: #6b6359; max-width: 1080px; text-wrap: pretty; width: 1133px; height: 90px">Study on forecasting&nbsp;chaotic Mackey-Glass time series data with quantum reservoir computing</p>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid #e2dad0;padding-top:28px;">
+      <div style="font:400 28px/1.5 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;">Valter Uotila · University of Helsinki<br>currently at TU Delft<br><br><span style="color: rgb(107, 99, 89); font-size: 26px;">QCE tutorial: From Circuits to Results</span></div>
+      
+    </div>
+  </section>
+
+  <section data-label="What this part delivers" data-screen-label="02" data-speaker-notes="This part now covers a quantum machine learning use case using quantum reservoir computing. The goal is to demonstrate how experiment tracking can be integrated into a realistic QML pipeline, how it supports it and what kind of benefits we gain from that. I'm not a specialist in quantum reservoir learning itself so developing this use case has been a learning experience as well.
+
+This part consists of three parts: first, we cover a brief background on the quantum reservoir computing paradigm.
+
+The second part necesserily goes more into the details consider the experiment tracking in this particular use case: we select a concrete data set, in this case Mackey-Glass, which is commonly used. We perform angle encoding for this data into static non parametrized circuits, define certain observables and then run these circuits so that we add a special error to the model. This error necessarily enables the reservoir to forget the past values. Finally, the classical linear model is fit to the data. 
+
+As a final conclusive demonstratation, we show how experiment tracking helps us to identify an issue in the model and fix that." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:64px 72px;display:flex;flex-direction:column;gap:36px;" data-om-slide-id="240d040b">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:18px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 02</div>
+        <h2 style="margin:12px 0 0;font:600 56px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">What to expect from this part and lessons to learn</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;min-height:0;">
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:34px;display:flex;flex-direction:column;gap:18px;">
+        <div style="font:600 69px/1 'JetBrains Mono',monospace;color:#e2dad0;">01</div>
+        <h3 style="margin:0;font:600 36px/1.2 'Source Serif 4',Georgia,serif;color:#28697a;">Brief background on quantum reservoir computing paradigm</h3>
+        <svg viewBox="0 0 440 420" style="width:100%;height:100%;max-height:100%;flex:1;min-height:0;" role="img" aria-hidden="true"><rect x="0" y="0" width="440" height="92" rx="9" fill="#f0eae0"></rect><text x="18" y="34" font-family="'JetBrains Mono',monospace" font-size="23" font-weight="500" fill="#2f2b27">input</text><polyline points="150.0,41.9 152.5,39.6 155.0,37.7 157.5,36.1 160.0,35.0 162.5,34.2 164.9,33.7 167.4,33.7 169.9,34.0 172.4,34.6 174.9,35.4 177.4,36.4 179.9,37.6 182.4,38.9 184.9,40.3 187.4,41.6 189.9,42.9 192.3,44.1 194.8,45.2 197.3,46.1 199.8,46.8 202.3,47.4 204.8,47.8 207.3,48.0 209.8,48.1 212.3,48.1 214.8,48.0 217.3,47.9 219.7,47.8 222.2,47.7 224.7,47.7 227.2,47.9 229.7,48.2 232.2,48.7 234.7,49.4 237.2,50.3 239.7,51.4 242.2,52.7 244.7,54.2 247.1,55.9 249.6,57.6 252.1,59.4 254.6,61.2 257.1,63.0 259.6,64.6 262.1,66.1 264.6,67.4 267.1,68.3 269.6,69.0 272.1,69.3 274.5,69.1 277.0,68.6 279.5,67.6 282.0,66.2 284.5,64.4 287.0,62.2 289.5,59.7 292.0,56.9 294.5,53.9 297.0,50.7 299.5,47.4 301.9,44.2 304.4,41.0" fill="none" stroke="#6b6359" stroke-width="2.6" stroke-linecap="round"></polyline><polyline points="304.4,41.0 306.9,38.0 309.4,35.2 311.9,32.7 314.4,30.6 316.9,28.8 319.4,27.6 321.9,26.8 324.4,26.5 326.9,26.7 329.3,27.4 331.8,28.5 334.3,30.0 336.8,31.9 339.3,34.1 341.8,36.6 344.3,39.2 346.8,42.0 349.3,44.7 351.8,47.5 354.3,50.1 356.7,52.6 359.2,54.8 361.7,56.8 364.2,58.5 366.7,59.8 369.2,60.9 371.7,61.6 374.2,62.0 376.7,62.1 379.2,62.0 381.7,61.6 384.1,61.1 386.6,60.4 389.1,59.6 391.6,58.8 394.1,58.0 396.6,57.3 399.1,56.6 401.6,56.1 404.1,55.7 406.6,55.4 409.1,55.3 411.5,55.3 414.0,55.5 416.5,55.7 419.0,56.1 421.5,56.4 424.0,56.8" fill="none" stroke="#8c5731" stroke-width="2.6" stroke-dasharray="7 5" stroke-linecap="round"></polyline><line x1="220" y1="100" x2="220" y2="121" stroke="#e2dad0" stroke-width="2.5"></line><polygon points="214,120 226,120 220,128" fill="#e2dad0"></polygon><rect x="0" y="130" width="440" height="152" rx="9" fill="rgba(40,105,122,.06)" stroke="#28697a" stroke-width="1.5"></rect><text x="18" y="164" font-family="'JetBrains Mono',monospace" font-size="23" font-weight="500" fill="#2f2b27">reservoir</text><g transform="translate(2,0)"><line x1="196" y1="152" x2="372" y2="152" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="196" y1="188" x2="372" y2="188" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="196" y1="224" x2="372" y2="224" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="196" y1="260" x2="372" y2="260" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><text x="150" y="161" font-family="'JetBrains Mono',monospace" font-size="25" font-weight="500" fill="#6b6359">|0⟩</text><text x="150" y="197" font-family="'JetBrains Mono',monospace" font-size="25" font-weight="500" fill="#6b6359">|0⟩</text><text x="150" y="233" font-family="'JetBrains Mono',monospace" font-size="25" font-weight="500" fill="#6b6359">|0⟩</text><text x="150" y="269" font-family="'JetBrains Mono',monospace" font-size="25" font-weight="500" fill="#6b6359">|0⟩</text><rect x="204" y="137" width="96" height="138" rx="8" fill="#d9e6ea" stroke="#28697a" stroke-width="2"></rect><text x="252" y="216" font-family="'JetBrains Mono',monospace" font-size="30" font-weight="600" fill="#28697a" text-anchor="middle">U</text><rect x="318" y="137" width="38" height="138" rx="8" fill="#f6e6d8" stroke="#8c5731" stroke-width="2" stroke-dasharray="5 3.5"></rect><text x="337" y="215" font-family="'JetBrains Mono',monospace" font-size="25" font-weight="600" fill="#8c5731" text-anchor="middle">γ</text><rect x="372" y="137" width="32" height="30" rx="5" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><path d="M 379 161 A 9 9 0 0 1 397 161" fill="none" stroke="#28697a" stroke-width="1.9"></path><line x1="388" y1="161" x2="395" y2="153" stroke="#28697a" stroke-width="1.9" stroke-linecap="round"></line><rect x="372" y="173" width="32" height="30" rx="5" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><path d="M 379 197 A 9 9 0 0 1 397 197" fill="none" stroke="#28697a" stroke-width="1.9"></path><line x1="388" y1="197" x2="395" y2="189" stroke="#28697a" stroke-width="1.9" stroke-linecap="round"></line><rect x="372" y="209" width="32" height="30" rx="5" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><path d="M 379 233 A 9 9 0 0 1 397 233" fill="none" stroke="#28697a" stroke-width="1.9"></path><line x1="388" y1="233" x2="395" y2="225" stroke="#28697a" stroke-width="1.9" stroke-linecap="round"></line><rect x="372" y="245" width="32" height="30" rx="5" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><path d="M 379 269 A 9 9 0 0 1 397 269" fill="none" stroke="#28697a" stroke-width="1.9"></path><line x1="388" y1="269" x2="395" y2="261" stroke="#28697a" stroke-width="1.9" stroke-linecap="round"></line></g><line x1="220" y1="290" x2="220" y2="311" stroke="#e2dad0" stroke-width="2.5"></line><polygon points="214,310 226,310 220,318" fill="#e2dad0"></polygon><rect x="0" y="320" width="440" height="100" rx="9" fill="#f0eae0"></rect><text x="18" y="354" font-family="'JetBrains Mono',monospace" font-size="23" font-weight="500" fill="#2f2b27">readout</text><line x1="216" y1="342" x2="288" y2="375" stroke="#6b6359" stroke-width="1.3" opacity=".7"></line><line x1="216" y1="364" x2="288" y2="375" stroke="#6b6359" stroke-width="1.3" opacity=".7"></line><line x1="216" y1="386" x2="288" y2="375" stroke="#6b6359" stroke-width="1.3" opacity=".7"></line><line x1="216" y1="408" x2="288" y2="375" stroke="#6b6359" stroke-width="1.3" opacity=".7"></line><circle cx="212" cy="342" r="6" fill="#6b6359"></circle><circle cx="212" cy="364" r="6" fill="#6b6359"></circle><circle cx="212" cy="386" r="6" fill="#6b6359"></circle><circle cx="212" cy="408" r="6" fill="#6b6359"></circle><circle cx="292" cy="375" r="9" fill="#28697a"></circle><polyline points="322.0,376.5 324.3,373.7 326.6,370.8 329.0,368.0 331.3,365.4 333.6,362.9 335.9,360.7 338.2,358.9 340.5,357.4 342.9,356.3 345.2,355.6 347.5,355.4 349.8,355.6 352.1,356.3 354.5,357.4 356.8,358.8 359.1,360.5 361.4,362.5 363.7,364.7 366.0,367.1 368.4,369.5 370.7,371.9 373.0,374.2 375.3,376.4 377.6,378.4 380.0,380.2 382.3,381.7 384.6,383.0 386.9,383.9 389.2,384.6 391.5,385.0 393.9,385.1 396.2,385.0 398.5,384.7 400.8,384.2 403.1,383.6 405.5,382.9 407.8,382.2 410.1,381.5 412.4,380.9 414.7,380.3 417.0,379.9 419.4,379.6 421.7,379.4 424.0,379.4" fill="none" stroke="#28697a" stroke-width="2.6" stroke-linecap="round"></polyline></svg>
+      </div>
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:34px;display:flex;flex-direction:column;gap:18px;">
+        <div style="font:600 69px/1 'JetBrains Mono',monospace;color:#e2dad0;">02</div>
+        <h3 style="margin:0;font:600 36px/1.2 'Source Serif 4',Georgia,serif;color:#28697a;">The interactive use case pipeline</h3>
+        <svg viewBox="0 0 440 420" style="width:100%;height:100%;max-height:100%;flex:1;min-height:0;" role="img" aria-hidden="true"><rect x="0" y="0" width="106" height="66" rx="9" fill="#f0eae0"></rect><polyline points="12.0,27.2 13.8,25.0 15.6,23.3 17.3,22.1 19.1,21.5 20.9,21.5 22.7,21.9 24.5,22.7 26.3,23.8 28.0,25.1 29.8,26.5 31.6,27.8 33.4,29.0 35.2,30.0 37.0,30.8 38.7,31.3 40.5,31.6 42.3,31.7 44.1,31.6 45.9,31.5 47.7,31.4 49.4,31.4 51.2,31.6 53.0,32.1 54.8,32.8 56.6,33.9 58.3,35.2 60.1,36.8 61.9,38.6 63.7,40.4 65.5,42.2 67.3,43.9 69.0,45.2 70.8,46.2 72.6,46.6 74.4,46.5 76.2,45.8 78.0,44.4 79.7,42.4 81.5,40.0 83.3,37.1 85.1,33.9 86.9,30.6 88.7,27.3 90.4,24.2 92.2,21.5 94.0,19.2" fill="none" stroke="#28697a" stroke-width="2.4" stroke-linecap="round"></polyline><text x="126" y="42" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="25" font-weight="500" fill="#2f2b27">Mackey-Glass</text><rect x="0" y="84" width="106" height="66" rx="9" fill="#f0eae0"></rect><line x1="53" y1="117" x2="80" y2="117" stroke="#e2dad0" stroke-width="2"></line><line x1="53" y1="117" x2="69.8" y2="95.9" stroke="#28697a" stroke-width="2.6"></line><path d="M 68 117 A 15 15 0 0 0 62.3 105.3" fill="none" stroke="#28697a" stroke-width="2"></path><circle cx="53" cy="117" r="3.5" fill="#6b6359"></circle><text x="126" y="126" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="25" font-weight="500" fill="#2f2b27">angle encoding</text><rect x="0" y="168" width="106" height="66" rx="9" fill="#f0eae0"></rect><line x1="5" y1="183" x2="101" y2="183" stroke="#6b6359" stroke-width="1.6" opacity=".55"></line><line x1="5" y1="199" x2="101" y2="199" stroke="#6b6359" stroke-width="1.6" opacity=".55"></line><line x1="5" y1="215" x2="101" y2="215" stroke="#6b6359" stroke-width="1.6" opacity=".55"></line><rect x="20" y="176" width="30" height="46" rx="6" fill="#d9e6ea" stroke="#28697a" stroke-width="1.8"></rect><text x="35" y="210" font-family="'JetBrains Mono',monospace" font-size="30" font-weight="600" fill="#28697a" text-anchor="middle">U</text><rect x="60" y="176" width="22" height="46" rx="6" fill="#f6e6d8" stroke="#8c5731" stroke-width="1.8" stroke-dasharray="4 3"></rect><text x="71" y="209" font-family="'JetBrains Mono',monospace" font-size="25" font-weight="600" fill="#8c5731" text-anchor="middle">γ</text><line x1="71" y1="222" x2="71" y2="228" stroke="#8c5731" stroke-width="1.6" stroke-dasharray="3 2"></line><line x1="63" y1="228" x2="79" y2="228" stroke="#8c5731" stroke-width="2"></line><line x1="66" y1="231" x2="76" y2="231" stroke="#8c5731" stroke-width="2"></line><line x1="69" y1="234" x2="73" y2="234" stroke="#8c5731" stroke-width="2"></line><text x="126" y="210" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="25" font-weight="500" fill="#2f2b27">dissipative reservoir</text><rect x="0" y="252" width="106" height="66" rx="9" fill="#f0eae0"></rect><line x1="26" y1="266" x2="80" y2="285" stroke="#6b6359" stroke-width="1.2" opacity=".7"></line><circle cx="22" cy="266" r="4.5" fill="#6b6359"></circle><line x1="26" y1="279" x2="80" y2="285" stroke="#6b6359" stroke-width="1.2" opacity=".7"></line><circle cx="22" cy="279" r="4.5" fill="#6b6359"></circle><line x1="26" y1="292" x2="80" y2="285" stroke="#6b6359" stroke-width="1.2" opacity=".7"></line><circle cx="22" cy="292" r="4.5" fill="#6b6359"></circle><line x1="26" y1="305" x2="80" y2="285" stroke="#6b6359" stroke-width="1.2" opacity=".7"></line><circle cx="22" cy="305" r="4.5" fill="#6b6359"></circle><circle cx="84" cy="285" r="7" fill="#28697a"></circle><text x="126" y="294" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="25" font-weight="500" fill="#2f2b27">ridge readout</text><line x1="0" y1="342" x2="440" y2="342" stroke="#e2dad0" stroke-width="1.5"></line><polyline points="6.0,370.6 10.8,371.5 15.5,372.5 20.3,373.4 25.0,374.3 29.8,375.1 34.5,375.8 39.3,376.5 44.0,377.1 48.8,377.5 53.6,377.9 58.3,378.1 63.1,378.3 67.8,378.4 72.6,378.4 77.3,378.4 82.1,378.3 86.8,378.2 91.6,378.2 96.4,378.1 101.1,378.1 105.9,378.2 110.6,378.3 115.4,378.5 120.1,378.9 124.9,379.3 129.6,379.9 134.4,380.6 139.2,381.4 143.9,382.3 148.7,383.4 153.4,384.5 158.2,385.7 162.9,386.9 167.7,388.2 172.4,389.4 177.2,390.7 182.0,391.8 186.7,392.9 191.5,393.9 196.2,394.7 201.0,395.3 205.7,395.8 210.5,396.0 215.2,396.0 220.0,395.8 224.8,395.3 229.5,394.6 234.3,393.6 239.0,392.4 243.8,391.0 248.5,389.3 253.3,387.5 258.0,385.5 262.8,383.4 267.6,381.2 272.3,378.9 277.1,376.7 281.8,374.4 286.6,372.2 291.3,370.1 296.1,368.2 300.8,366.3 305.6,364.7 310.4,363.4 315.1,362.2 319.9,361.4 324.6,360.8 329.4,360.5 334.1,360.4 338.9,360.7 343.6,361.2 348.4,362.0 353.2,363.1 357.9,364.3 362.7,365.8 367.4,367.4 372.2,369.1 376.9,371.0 381.7,372.9 386.4,374.8 391.2,376.7 396.0,378.6 400.7,380.4 405.5,382.1 410.2,383.7 415.0,385.1 419.7,386.4 424.5,387.5 429.2,388.4 434.0,389.1" fill="none" stroke="#6b6359" stroke-width="3" stroke-linecap="round" opacity=".85"></polyline><polyline points="6.0,373.5 10.8,374.4 15.5,375.3 20.3,376.1 25.0,376.9 29.8,377.5 34.5,378.1 39.3,378.6 44.0,379.0 48.8,379.2 53.6,379.4 58.3,379.5 63.1,379.4 67.8,379.4 72.6,379.2 77.3,379.1 82.1,378.9 86.8,378.7 91.6,378.5 96.4,378.4 101.1,378.4 105.9,378.4 110.6,378.5 115.4,378.8 120.1,379.1 124.9,379.5 129.6,380.1 134.4,380.8 139.2,381.6 143.9,382.5 148.7,383.5 153.4,384.5 158.2,385.6 162.9,386.8 167.7,387.9 172.4,389.0 177.2,390.0 182.0,391.0 186.7,391.9 191.5,392.6 196.2,393.2 201.0,393.6 205.7,393.8 210.5,393.9 215.2,393.7 220.0,393.3 224.8,392.6 229.5,391.8 234.3,390.7 239.0,389.4 243.8,388.0 248.5,386.4 253.3,384.7 258.0,382.8 262.8,380.9 267.6,378.9 272.3,376.9 277.1,375.0 281.8,373.1 286.6,371.3 291.3,369.6 296.1,368.0 300.8,366.7 305.6,365.5 310.4,364.6 315.1,363.9 319.9,363.4 324.6,363.2 329.4,363.2 334.1,363.5 338.9,364.0 343.6,364.8 348.4,365.7 353.2,366.8 357.9,368.1 362.7,369.5 367.4,371.1 372.2,372.7 376.9,374.3 381.7,376.0 386.4,377.6 391.2,379.2 396.0,380.7 400.7,382.1 405.5,383.4 410.2,384.5 415.0,385.5 419.7,386.4 424.5,387.1 429.2,387.6 434.0,387.9" fill="none" stroke="#28697a" stroke-width="2.4" stroke-linecap="round"></polyline><polyline points="6.0,381.9 10.8,382.4 15.5,382.7 20.3,382.9 25.0,382.9 29.8,382.9 34.5,382.8 39.3,382.6 44.0,382.3 48.8,381.9 53.6,381.5 58.3,381.0 63.1,380.6 67.8,380.1 72.6,379.6 77.3,379.2 82.1,378.8 86.8,378.5 91.6,378.2 96.4,378.0 101.1,378.0 105.9,378.0 110.6,378.1 115.4,378.3 120.1,378.6 124.9,379.1 129.6,379.5 134.4,380.1 139.2,380.7 143.9,381.4 148.7,382.1 153.4,382.8 158.2,383.5 162.9,384.2 167.7,384.9 172.4,385.4 177.2,385.9 182.0,386.3 186.7,386.7 191.5,386.9 196.2,386.9 201.0,386.9 205.7,386.7 210.5,386.4 215.2,386.0 220.0,385.4 224.8,384.8 229.5,384.0 234.3,383.2 239.0,382.2 243.8,381.3 248.5,380.3 253.3,379.3 258.0,378.3 262.8,377.3 267.6,376.4 272.3,375.5 277.1,374.7 281.8,374.0 286.6,373.5 291.3,373.0 296.1,372.6 300.8,372.4 305.6,372.3 310.4,372.3 315.1,372.5 319.9,372.7 324.6,373.1 329.4,373.6 334.1,374.1 338.9,374.8 343.6,375.4 348.4,376.1 353.2,376.9 357.9,377.6 362.7,378.3 367.4,379.0 372.2,379.6 376.9,380.2 381.7,380.7 386.4,381.2 391.2,381.6 396.0,381.8 400.7,382.0 405.5,382.1 410.2,382.2 415.0,382.1 419.7,382.0 424.5,381.9 429.2,381.7 434.0,381.5" fill="none" stroke="#71578b" stroke-width="2.4" stroke-dasharray="7 5" stroke-linecap="round"></polyline><line x1="6" y1="413" x2="30" y2="413" stroke="#6b6359" stroke-width="3" stroke-linecap="round"></line><text x="38" y="419" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="22" font-weight="500" fill="#6b6359">actual</text><line x1="128.4" y1="413" x2="152.4" y2="413" stroke="#28697a" stroke-width="3" stroke-linecap="round"></line><text x="160.4" y="419" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="22" font-weight="500" fill="#6b6359">quantum</text><line x1="262.20000000000005" y1="413" x2="286.20000000000005" y2="413" stroke="#71578b" stroke-width="3" stroke-dasharray="7 5" stroke-linecap="round"></line><text x="294.20000000000005" y="419" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="22" font-weight="500" fill="#6b6359">classical</text></svg>
+      </div>
+      <div style="background:#ffffff;border:1px solid #8c5731;border-radius:12px;padding:34px;display:flex;flex-direction:column;gap:18px;">
+        <div style="font:600 69px/1 'JetBrains Mono',monospace;color:#ecdcc6;">03</div>
+        <h3 style="margin:0;font:600 36px/1.2 'Source Serif 4',Georgia,serif;color:#8c5731;">Experiment track a hiding failure and fix it</h3>
+        <svg viewBox="0 0 440 420" style="width:100%;height:100%;max-height:100%;flex:1;min-height:0;" role="img" aria-hidden="true"><path d="M 267.3 72.8 A 132 132 0 0 1 343.2 148.7" fill="none" stroke="#e2dad0" stroke-width="3"></path><polygon points="347.2,159.0 336.7,151.2 349.8,146.2" fill="#e2dad0"></polygon><path d="M 343.2 243.3 A 132 132 0 0 1 267.3 319.2" fill="none" stroke="#e2dad0" stroke-width="3"></path><polygon points="257.0,323.2 264.8,312.7 269.8,325.8" fill="#e2dad0"></polygon><path d="M 172.7 319.2 A 132 132 0 0 1 96.8 243.3" fill="none" stroke="#e2dad0" stroke-width="3"></path><polygon points="92.8,233.0 103.3,240.8 90.2,245.8" fill="#e2dad0"></polygon><path d="M 96.8 148.7 A 132 132 0 0 1 172.7 72.8" fill="none" stroke="#e2dad0" stroke-width="3"></path><polygon points="183.0,68.8 175.2,79.3 170.2,66.2" fill="#e2dad0"></polygon><circle cx="220.0" cy="64.0" r="27" fill="#ffffff" stroke="#28697a" stroke-width="2.2"></circle><polygon points="214,56 214,72 228,64" fill="#28697a"></polygon><text x="220" y="18" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="24" font-weight="600" fill="#2f2b27" text-anchor="middle">run</text><circle cx="352.0" cy="196.0" r="27" fill="#ffffff" stroke="#28697a" stroke-width="2.2"></circle><line x1="344" y1="189" x2="360" y2="189" stroke="#28697a" stroke-width="2.4" stroke-linecap="round"></line><line x1="344" y1="196" x2="356" y2="196" stroke="#28697a" stroke-width="2.4" stroke-linecap="round"></line><line x1="344" y1="203" x2="360" y2="203" stroke="#28697a" stroke-width="2.4" stroke-linecap="round"></line><text x="438" y="204" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="24" font-weight="600" fill="#2f2b27" text-anchor="end">track</text><circle cx="220.0" cy="328.0" r="27" fill="#ffffff" stroke="#8c5731" stroke-width="2.2"></circle><circle cx="214" cy="329" r="4.5" fill="#8c5731"></circle><circle cx="226" cy="322" r="4.5" fill="#8c5731"></circle><text x="220" y="384" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="24" font-weight="600" fill="#8c5731" text-anchor="middle">spot</text><circle cx="88.0" cy="196.0" r="27" fill="#ffffff" stroke="#28697a" stroke-width="2.2"></circle><polyline points="80,197.00000000000003 86,203.00000000000003 96,189.00000000000003" fill="none" stroke="#28697a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"></polyline><text x="44" y="204.00000000000003" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="24" font-weight="600" fill="#2f2b27" text-anchor="end">fix</text><text x="220" y="192" font-family="'JetBrains Mono',monospace" font-size="27" font-weight="600" fill="#8c5731" text-anchor="middle">R² 0.70</text><text x="220" y="228" font-family="'JetBrains Mono',monospace" font-size="27" font-weight="600" fill="#28697a" text-anchor="middle">→ 0.98</text></svg>
+      </div>
+    </div>
+  </section>
+
+  <section data-label="Reservoir computing" data-screen-label="03" data-speaker-notes="Input signal: Classical reservoir computing is a framework for computation derived from recurrent neural network theory that maps input signals into higher-dimensional computational spaces through the dynamics of a fixed, non-linear system called a reservoir. The overall idea is that we have some time-dependent data, like time series, which works as input data for the model. We then use necessarily static circuits, in comparison to variational quantum machine learning, to map this low-dimensional input series into a higher-dimensional space.
+
+We then collect certain measurement results, expectation values for observables, from the reservoir and finally use a simple classical machine learning model, such as ridge regression, to fit the targets to the higher-dimensional data. Note that although the model used, such as ridge, is linear, which cannot learn non-linear dynamics, the usage of the reservoir allows us to perform this fitting linearly in this higher-dimensional space. 
+
+This is also a tracking problem. At every step, we have many metrics and artifacts that we should keep track of for the reasons that have been mentioned in the previous parts of this tutorial. There are some examples here but we will see more details later.
+
+Reservoir computing and quantum reservoir computing have certain motivations. Nothing inside the reservoir is trained, so we don't need backpropagation or expensive variational loops. The last readout layer may even have a closed-form formula that enables fast training." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:64px 72px;display:flex;flex-direction:column;gap:32px;" data-om-slide-id="1dad96df">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:18px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;"></div>
+        <h2 style="margin:12px 0 0;font:600 56px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Reservoir computing -- high level idea and motivation</h2>
+      </div>
+      
+    </div><div style="flex:1;display:flex;flex-direction:column;gap:8px;min-height:0;">
+      <div style="flex:1;display:grid;grid-template-columns:1fr 34px 1.14fr 34px 1fr;grid-template-rows:minmax(0,1fr);gap:12px;min-height:0;align-items:stretch;">
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:16px 18px 14px;display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0;overflow:hidden;">
+        <div style="font:600 26px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#6f675e;">input signal</div><svg viewBox="0 0 460 300" style="width:100%;height:100%;max-height:100%;flex:1;min-height:0;" role="img" aria-hidden="true"><polyline points="44.0,40.1 47.2,40.2 50.3,40.7 53.5,41.6 56.7,42.8 59.8,44.5 63.0,46.3 66.2,48.4 69.3,50.7 72.5,53.2 75.7,55.7 78.8,58.4 82.0,61.1 85.2,63.7 88.3,66.3 91.5,68.8 94.7,71.2 97.8,73.5 101.0,75.5 104.2,77.4 107.3,79 110.5,80.5 113.7,81.7 116.8,82.7 120.0,83.5 123.2,84.1 126.3,84.4 129.5,84.7 132.7,84.7 135.8,84.7 139.0,84.5 142.2,84.3 145.3,84.1 148.5,83.8 151.7,83.7 154.8,83.5 158.0,83.5 161.2,83.7 164.3,83.9 167.5,84.4 170.7,85.1 173.8,86.1 177.0,87.3 180.2,88.7 183.3,90.4 186.5,92.4 189.7,94.7 192.8,97.2 196.0,99.9 199.2,102.9 202.3,106.1 205.5,109.3 208.7,112.8 211.8,116.4 215.0,119.9 218.2,123.5 221.3,127.1 224.5,130.6 227.7,133.9 230.8,137.1 234.0,139.9 237.2,142.6 240.3,144.8 243.5,146.8 246.7,148.3 249.8,149.4 253.0,149.9 256.2,150 259.3,149.6 262.5,148.6 265.7,147.1 268.8,145 272.0,142.4 275.2,139.3 278.3,135.7 281.5,131.6 284.7,126.9 287.8,121.9 291.0,116.6 294.2,110.9 297.3,104.9 300.5,98.7 303.7,92.4 306.8,85.9 310.0,79.4 313.2,73 316.3,66.7 319.5,60.5 322.7,54.5 325.8,48.8 329.0,43.5 332.2,38.5 335.3,34 338.5,30 341.7,26.5 344.8,23.6 348.0,21.3 351.2,19.6 354.3,18.4 357.5,18 360.7,18.1 363.8,18.9 367.0,20.2 370.2,22.2 373.3,24.7 376.5,27.7 379.7,31.3 382.8,35.2 386.0,39.5 389.2,44.2 392.3,49.2 395.5,54.4 398.7,59.6 401.8,65.1 405.0,70.6 408.2,76.1 411.3,81.5 414.5,86.8 417.7,91.9 420.8,96.8 424.0,101.4" fill="none" stroke="#6b6359" stroke-width="3.2" stroke-linecap="round"></polyline><line x1="44" y1="52.1" x2="44" y2="197" stroke="#e2dad0" stroke-width="2" stroke-dasharray="4 4"></line><line x1="120" y1="95.5" x2="120" y2="197" stroke="#e2dad0" stroke-width="2" stroke-dasharray="4 4"></line><line x1="196" y1="111.9" x2="196" y2="197" stroke="#e2dad0" stroke-width="2" stroke-dasharray="4 4"></line><line x1="272" y1="154.4" x2="272" y2="197" stroke="#e2dad0" stroke-width="2" stroke-dasharray="4 4"></line><line x1="348" y1="33.3" x2="348" y2="197" stroke="#e2dad0" stroke-width="2" stroke-dasharray="4 4"></line><line x1="424" y1="113.4" x2="424" y2="197" stroke="#e2dad0" stroke-width="2" stroke-dasharray="4 4"></line><line x1="28" y1="200" x2="440" y2="200" stroke="#e2dad0" stroke-width="2"></line><rect x="23" y="200" width="42" height="35.2" rx="4" fill="rgba(107,99,89,.22)"></rect><rect x="99" y="200" width="42" height="15.6" rx="4" fill="rgba(107,99,89,.22)"></rect><rect x="175" y="200" width="42" height="16.6" rx="4" fill="rgba(107,99,89,.22)"></rect><rect x="251" y="200" width="42" height="35.8" rx="4" fill="rgba(107,99,89,.22)"></rect><rect x="327" y="200" width="42" height="43.7" rx="4" fill="rgba(40,105,122,.55)"></rect><rect x="403" y="200" width="42" height="17.3" rx="4" fill="rgba(107,99,89,.22)"></rect><circle cx="44" cy="40.1" r="9.5" fill="#ffffff" stroke="#28697a" stroke-width="2.6"></circle><circle cx="120" cy="83.5" r="9.5" fill="#ffffff" stroke="#28697a" stroke-width="2.6"></circle><circle cx="196" cy="99.9" r="9.5" fill="#ffffff" stroke="#28697a" stroke-width="2.6"></circle><circle cx="272" cy="142.4" r="9.5" fill="#ffffff" stroke="#28697a" stroke-width="2.6"></circle><circle cx="348" cy="21.3" r="9.5" fill="#28697a" stroke="#28697a" stroke-width="2.6"></circle><circle cx="424" cy="101.4" r="9.5" fill="#ffffff" stroke="#28697a" stroke-width="2.6"></circle><line x1="28" y1="250" x2="428" y2="250" stroke="#cdc2b3" stroke-width="2.6"></line><polygon points="440,250 426,243 426,257" fill="#cdc2b3"></polygon><text x="272" y="290" font-family="'JetBrains Mono',monospace" font-size="30" font-weight="500" fill="#6b6359" text-anchor="middle">x<tspan font-size="19" dy="7">t−1</tspan></text><text x="348" y="290" font-family="'JetBrains Mono',monospace" font-size="30" font-weight="600" fill="#28697a" text-anchor="middle">x<tspan font-size="19" dy="7">t</tspan></text></svg>
+        
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center; font: 400 43px 'JetBrains Mono',monospace; color: #000000; font-size: 43px">→</div>
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:16px 18px 14px;display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0;overflow:hidden;">
+        <div style="font:600 26px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#6f675e;">STATES EVOLVE NON-LINEARLY</div>
+        
+        <svg viewBox="0 0 540 300" style="width:100%;height:100%;max-height:100%;flex:1;min-height:0;" role="img" aria-hidden="true"><rect x="0" y="0" width="150" height="228" rx="10" fill="#f0eae0"></rect><line x1="38" y1="62" x2="104" y2="48" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="104" y1="48" x2="122" y2="116" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="122" y1="116" x2="72" y2="108" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="72" y1="108" x2="38" y2="62" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="72" y1="108" x2="34" y2="148" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="34" y1="148" x2="96" y2="180" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="96" y1="180" x2="122" y2="116" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="38" y1="62" x2="34" y2="148" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><circle cx="38" cy="62" r="10" fill="#28697a"></circle><circle cx="104" cy="48" r="10" fill="#28697a"></circle><circle cx="122" cy="116" r="10" fill="#28697a"></circle><circle cx="72" cy="108" r="10" fill="#28697a"></circle><circle cx="34" cy="148" r="10" fill="#28697a"></circle><circle cx="96" cy="180" r="10" fill="#28697a"></circle><text x="75" y="274" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="26" font-weight="500" fill="#6b6359" text-anchor="middle">network</text><rect x="180" y="0" width="150" height="228" rx="10" fill="#f0eae0"></rect><line x1="196" y1="76" x2="272" y2="76" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="196" y1="114" x2="272" y2="114" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="196" y1="152" x2="272" y2="152" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><rect x="224" y="62" width="34" height="104" rx="6" fill="#d9e6ea" stroke="#28697a" stroke-width="2"></rect><text x="241" y="120" font-family="'JetBrains Mono',monospace" font-size="30" font-weight="600" fill="#28697a" text-anchor="middle">U</text><rect x="276" y="64" width="26" height="24" rx="4" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><rect x="276" y="102" width="26" height="24" rx="4" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><rect x="276" y="140" width="26" height="24" rx="4" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><text x="255" y="274" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="26" font-weight="500" fill="#6b6359" text-anchor="middle">circuit</text><rect x="360" y="0" width="150" height="228" rx="10" fill="#f0eae0"></rect><clipPath id="pail"><path d="M 394 62 L 406 186 L 464 186 L 476 62 Z"></path></clipPath><g clip-path="url(#pail)"><rect x="394" y="96" width="82" height="90" fill="rgba(40,105,122,.28)"></rect><polyline points="394.0,92.5 396.1,91.9 398.1,92.0 400.1,92.5 402.2,93.3 404.3,94.3 406.3,95.4 408.4,96.2 410.4,96.8 412.4,97.2 414.5,97.3 416.6,97.2 418.6,97.2 420.6,97.2 422.7,97.4 424.8,98.0 426.8,98.8 428.9,100.0 430.9,101.4 432.9,102.8 435.0,104.0 437.1,104.9 439.1,105.2 441.1,104.9 443.2,104.0 445.3,102.4 447.3,100.3 449.4,97.8 451.4,95.3 453.4,93.0 455.5,91.1 457.6,89.8 459.6,89.2 461.6,89.4 463.7,90.4 465.8,91.9 467.8,93.9 469.9,96.0 471.9,98.1 473.9,99.9 476.0,101.3" fill="none" stroke="#28697a" stroke-width="3"></polyline><polyline points="394.0,125.5 396.1,125.6 398.1,125.6 400.1,125.5 402.2,125.5 404.3,125.7 406.3,125.9 408.4,126.4 410.4,127.0 412.4,127.8 414.5,128.6 416.6,129.3 418.6,129.8 420.6,130.0 422.7,129.9 424.8,129.4 426.8,128.5 428.9,127.4 430.9,126.1 432.9,124.7 435.0,123.3 437.1,122.2 439.1,121.5 441.1,121.1 443.2,121.2 445.3,121.7 447.3,122.5 449.4,123.6 451.4,124.8 453.4,125.9 455.5,126.9 457.6,127.7 459.6,128.3 461.6,128.5 463.7,128.5 465.8,128.3 467.8,128.0 469.9,127.6 471.9,127.3 473.9,127.2 476.0,127.1" fill="none" stroke="#28697a" stroke-width="2" opacity=".5"></polyline></g><path d="M 394 62 L 406 186 L 464 186 L 476 62" fill="none" stroke="#6b6359" stroke-width="2.6" stroke-linejoin="round"></path><line x1="390" y1="62" x2="480" y2="62" stroke="#6b6359" stroke-width="2.6"></line><circle cx="435" cy="34" r="7" fill="#28697a"></circle><line x1="435" y1="44" x2="435" y2="56" stroke="#28697a" stroke-width="2" stroke-dasharray="4 4"></line><text x="435" y="274" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="26" font-weight="500" fill="#6b6359" text-anchor="middle">bucket of water</text></svg>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center; font: 400 43px 'JetBrains Mono',monospace; color: #000000">→</div>
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:16px 18px 14px;display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0;overflow:hidden;">
+        <div style="font:600 26px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#28697a;">readout is the only trained layer</div>
+        
+        <svg viewBox="0 0 460 330" style="width:100%;height:100%;max-height:100%;flex:1;min-height:0;" role="img" aria-hidden="true"><rect x="36" y="31" width="20" height="18" rx="4" fill="rgba(40,105,122,.30)"></rect><circle cx="20" cy="40" r="7" fill="#28697a"></circle><rect x="36" y="75" width="43" height="18" rx="4" fill="rgba(40,105,122,.30)"></rect><circle cx="20" cy="84" r="7" fill="#28697a"></circle><rect x="36" y="119" width="26" height="18" rx="4" fill="rgba(40,105,122,.30)"></rect><circle cx="20" cy="128" r="7" fill="#28697a"></circle><rect x="36" y="163" width="49" height="18" rx="4" fill="rgba(40,105,122,.30)"></rect><circle cx="20" cy="172" r="7" fill="#28697a"></circle><rect x="36" y="207" width="32" height="18" rx="4" fill="rgba(40,105,122,.30)"></rect><circle cx="20" cy="216" r="7" fill="#28697a"></circle><rect x="36" y="251" width="55" height="18" rx="4" fill="rgba(40,105,122,.30)"></rect><circle cx="20" cy="260" r="7" fill="#28697a"></circle><line x1="100" y1="40" x2="222" y2="150" stroke="#28697a" stroke-width="1.2" opacity=".55"></line><line x1="100" y1="84" x2="222" y2="150" stroke="#28697a" stroke-width="2.7" opacity=".55"></line><line x1="100" y1="128" x2="222" y2="150" stroke="#28697a" stroke-width="4.2" opacity=".55"></line><line x1="100" y1="172" x2="222" y2="150" stroke="#28697a" stroke-width="1.2" opacity=".55"></line><line x1="100" y1="216" x2="222" y2="150" stroke="#28697a" stroke-width="2.7" opacity=".55"></line><line x1="100" y1="260" x2="222" y2="150" stroke="#28697a" stroke-width="4.2" opacity=".55"></line><circle cx="232" cy="150" r="16" fill="#28697a"></circle><line x1="252" y1="150" x2="286" y2="150" stroke="#cdc2b3" stroke-width="2.6"></line><polygon points="298,150 284,143 284,157" fill="#cdc2b3"></polygon><rect x="306" y="72" width="146" height="156" rx="9" fill="#f0eae0"></rect><polyline points="318.0,118.5 319.8,120.8 321.5,123.3 323.3,126.0 325.1,128.8 326.9,131.7 328.6,134.4 330.4,136.9 332.2,139.2 333.9,141.1 335.7,142.8 337.5,144.0 339.3,145.0 341.0,145.6 342.8,145.9 344.6,145.9 346.3,145.8 348.1,145.6 349.9,145.3 351.7,145.1 353.4,145.1 355.2,145.2 357.0,145.7 358.7,146.5 360.5,147.6 362.3,149.2 364.1,151.3 365.8,153.7 367.6,156.6 369.4,159.8 371.1,163.3 372.9,166.9 374.7,170.7 376.5,174.5 378.2,178.2 380.0,181.7 381.8,184.8 383.5,187.5 385.3,189.6 387.1,191.0 388.9,191.7 390.6,191.6 392.4,190.6 394.2,188.8 395.9,186.1 397.7,182.5 399.5,178.2 401.3,173.1 403.0,167.5 404.8,161.3 406.6,154.7 408.3,148.0 410.1,141.1 411.9,134.3 413.7,127.8 415.4,121.6 417.2,115.9 419.0,110.9 420.7,106.7 422.5,103.4 424.3,100.9 426.1,99.5 427.8,99.1 429.6,99.6 431.4,101.1 433.1,103.6 434.9,106.8 436.7,110.9 438.5,115.5 440.2,120.7 442.0,126.2" fill="none" stroke="#6b6359" stroke-width="3" stroke-linecap="round" opacity=".8"></polyline><polyline points="318.0,127.0 319.8,129.7 321.5,132.5 323.3,135.3 325.1,138.1 326.9,140.7 328.6,143.0 330.4,145.1 332.2,146.8 333.9,148.1 335.7,149.0 337.5,149.6 339.3,149.8 341.0,149.7 342.8,149.4 344.6,148.8 346.3,148.1 348.1,147.4 349.9,146.7 351.7,146.1 353.4,145.7 355.2,145.6 357.0,145.8 358.7,146.4 360.5,147.3 362.3,148.7 364.1,150.5 365.8,152.7 367.6,155.3 369.4,158.1 371.1,161.2 372.9,164.5 374.7,167.8 376.5,171.0 378.2,174.1 380.0,177.0 381.8,179.5 383.5,181.6 385.3,183.1 387.1,184.0 388.9,184.3 390.6,183.8 392.4,182.6 394.2,180.6 395.9,178.0 397.7,174.6 399.5,170.6 401.3,166.0 403.0,161.1 404.8,155.7 406.6,150.1 408.3,144.5 410.1,138.9 411.9,133.4 413.7,128.2 415.4,123.5 417.2,119.3 419.0,115.7 420.7,112.8 422.5,110.6 424.3,109.3 426.1,108.8 427.8,109.1 429.6,110.2 431.4,112.1 433.1,114.6 434.9,117.7 436.7,121.4 438.5,125.5 440.2,129.8 442.0,134.3" fill="none" stroke="#28697a" stroke-width="2.6" stroke-dasharray="8 5" stroke-linecap="round"></polyline><text x="20" y="314" font-family="'JetBrains Mono',monospace" font-size="30" font-weight="600" fill="#28697a">x<tspan font-size="19" dy="7">t</tspan></text><text x="379" y="314" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="26" font-weight="500" fill="#6b6359" text-anchor="middle">prediction</text></svg>
+      </div>
+    </div>
+      <div style="flex:none;display:grid;grid-template-columns:1fr 34px 1.14fr 34px 1fr;gap:12px;">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;"><div style="width:0;height:15px;border-left:3px solid #8c5731;"></div><div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:10px solid #8c5731;"></div></div><div></div><div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;"><div style="width:0;height:15px;border-left:3px solid #8c5731;"></div><div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:10px solid #8c5731;"></div></div><div></div><div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;"><div style="width:0;height:15px;border-left:3px solid #8c5731;"></div><div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:10px solid #8c5731;"></div></div>
+      </div>
+      <div style="flex:none;display:flex;flex-direction:column;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 46px 1.14fr 46px 1fr;gap:20px;align-items:stretch;">
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:10px 16px 11px;display:flex;flex-direction:column;gap:5px;min-width:0;overflow:hidden;">
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b6359;">track</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font:400 26px/1.25 'JetBrains Mono',monospace;color:#6b6359;">
+          <div>dataset + τ, seeds</div>
+          <div style="color: #6B6359">splits, scalers</div>
+        </div>
+      </div>
+      <div></div>
+      <div style="background:#ffffff;border:1px solid #28697a;border-radius:12px;padding:10px 16px 11px;display:flex;flex-direction:column;gap:5px;min-width:0;overflow:hidden;">
+        <div style="font: 600 26px/1.2 'JetBrains Mono',monospace; letter-spacing: .1em; text-transform: uppercase; color: #6B6359">track</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font:400 26px/1.25 'JetBrains Mono',monospace;color:#6b6359;">
+          <div>n_qubits, γ, evolution time </div>
+          <div>observables, shots, backend </div>
+        </div>
+      </div>
+      <div></div>
+      <div style="background:#ffffff;border:1px solid #8c5731;border-radius:12px;padding:10px 16px 11px;display:flex;flex-direction:column;gap:5px;min-width:0;overflow:hidden;">
+        <div style="font: 600 26px/1.2 'JetBrains Mono',monospace; letter-spacing: .1em; text-transform: uppercase; color: #6B6359">track</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font:400 26px/1.25 'JetBrains Mono',monospace;color:#6b6359;">
+          <div>ridge α, n_features </div><div>R², NRMSE + model hash </div>
+          
+        </div>
+      </div>
+      </div>
+      </div>
+
+      <div style="flex:none;display:flex;flex-direction:column;gap:12px;">
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;flex:none;">
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b6359;border-bottom:1px solid #e2dad0;padding-bottom:10px;">why reservoir computing</div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#28697a;border-bottom:1px solid #e2dad0;padding-bottom:10px;">why build the reservoir on a quantum device</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-items:stretch;">
+        <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:6px;min-width:0;">
+          <svg viewBox="0 0 380 92" style="height:44px;width:auto;max-width:100%;flex:none;" role="img" aria-hidden="true"><rect x="16" y="30" width="348" height="30" rx="10" fill="rgba(107,99,89,.20)"></rect><rect x="300" y="30" width="64" height="30" rx="10" fill="#28697a"></rect><line x1="300" y1="22" x2="300" y2="68" stroke="#cdc2b3" stroke-width="2" stroke-dasharray="4 4"></line><polygon points="332,80 324,68 340,68" fill="#28697a"></polygon></svg>
+          <div style="font:600 29px/1.15 'IBM Plex Sans',system-ui,sans-serif;color:#2f2b27;">Cheap to train</div>
+          <div style="font:400 26px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6359;text-wrap:pretty;">Only the readout is trained.</div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:6px;min-width:0;">
+          <svg viewBox="0 0 380 92" style="height:44px;width:auto;max-width:100%;flex:none;" role="img" aria-hidden="true"><line x1="16" y1="76" x2="364" y2="76" stroke="#e2dad0" stroke-width="2"></line><rect x="22" y="14" width="26" height="62" rx="4" fill="#28697a"></rect><rect x="74" y="43.1" width="26" height="32.9" rx="4" fill="rgba(107,99,89,.28)"></rect><rect x="122" y="54.4" width="26" height="21.6" rx="4" fill="rgba(107,99,89,.28)"></rect><rect x="170" y="61.8" width="26" height="14.2" rx="4" fill="rgba(107,99,89,.28)"></rect><rect x="218" y="66.7" width="26" height="9.3" rx="4" fill="rgba(107,99,89,.28)"></rect><rect x="266" y="69.9" width="26" height="6.1" rx="4" fill="rgba(107,99,89,.28)"></rect><rect x="314" y="72.0" width="26" height="4.0" rx="4" fill="rgba(107,99,89,.28)"></rect><polyline points="35,14.0 83,35.3 131,49.2 179,58.4 227,64.4 275,68.4 323,71.0" fill="none" stroke="#8c5731" stroke-width="2.2" stroke-dasharray="6 4"></polyline></svg>
+          <div style="font:600 29px/1.15 'IBM Plex Sans',system-ui,sans-serif;color:#2f2b27;">Reusable</div>
+          <div style="font:400 26px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6359;text-wrap:pretty;">The reservoir state remembers past inputs on its own.</div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:6px;min-width:0;">
+          <svg viewBox="0 0 380 92" style="height:44px;width:auto;max-width:100%;flex:none;" role="img" aria-hidden="true"><circle cx="46" cy="47" r="6.5" fill="#28697a" opacity="0.45"></circle><line x1="72" y1="46" x2="108" y2="46" stroke="#cdc2b3" stroke-width="2"></line><polygon points="120,46 106,39 106,53" fill="#cdc2b3"></polygon><circle cx="146" cy="38" r="6.5" fill="#28697a" opacity="0.59"></circle><circle cx="146" cy="56" r="6.5" fill="#28697a" opacity="0.59"></circle><line x1="172" y1="46" x2="208" y2="46" stroke="#cdc2b3" stroke-width="2"></line><polygon points="220,46 206,39 206,53" fill="#cdc2b3"></polygon><circle cx="246" cy="20" r="6.5" fill="#28697a" opacity="0.73"></circle><circle cx="246" cy="38" r="6.5" fill="#28697a" opacity="0.73"></circle><circle cx="246" cy="56" r="6.5" fill="#28697a" opacity="0.73"></circle><circle cx="246" cy="74" r="6.5" fill="#28697a" opacity="0.73"></circle><line x1="272" y1="46" x2="308" y2="46" stroke="#cdc2b3" stroke-width="2"></line><polygon points="320,46 306,39 306,53" fill="#cdc2b3"></polygon><circle cx="336" cy="20" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="336" cy="38" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="336" cy="56" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="336" cy="74" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="356" cy="20" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="356" cy="38" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="356" cy="56" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="356" cy="74" r="6.5" fill="#28697a" opacity="0.87"></circle></svg>
+          <div style="font:600 29px/1.15 'IBM Plex Sans',system-ui,sans-serif;color:#28697a;">Exponential state space</div>
+          <div style="font:400 26px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6359;text-wrap:pretty;">Every qubit doubles the state space which makes it rich.</div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:6px;min-width:0;">
+          <svg viewBox="0 0 380 92" style="height:44px;width:auto;max-width:100%;flex:none;" role="img" aria-hidden="true"><circle cx="76" cy="46" r="30" fill="none" stroke="rgba(107,99,89,.45)" stroke-width="3" stroke-dasharray="46 14"></circle><polygon points="106,40 92,32 96,48" fill="rgba(107,99,89,.45)"></polygon><line x1="46" y1="76" x2="106" y2="16" stroke="#8c5731" stroke-width="4" stroke-linecap="round"></line><line x1="164" y1="46" x2="300" y2="46" stroke="#28697a" stroke-width="3"></line><rect x="214" y="26" width="40" height="40" rx="8" fill="rgba(40,105,122,.18)" stroke="#28697a" stroke-width="2.4"></rect><polygon points="316,46 300,37 300,55" fill="#28697a"></polygon></svg>
+          <div style="font:600 29px/1.15 'IBM Plex Sans',system-ui,sans-serif;color:#28697a;">No variational loop</div>
+          <div style="font:400 26px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6359;text-wrap:pretty;">Nothing inside the circuits is optimized which removes expensive variational loops.</div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <section data-label="Echo state property" data-screen-label="04" data-speaker-notes="I wanted to collect some defining properties of reservoir computing so that, hopefully, one can better understand what kind of tasks and machine learning problems we are tackling with this model. 
+
+The first point on the list is this echo state property: this means that if you start from different points but use the same input data sequence, you will converge to the same point. This is very characteristic of reservoir computing systems and quantum reservoir computing. 
+
+The second point is fading memory:  This simply means that recent inputs affect the outputs more than the old ones. The model tends to forget the past. This is important and we will demonstrate what happens if your model does not have this property: it necessarily makes this particular use case useless. 
+
+Reservoir computing systems have this special notion of memory capacity which is just a measurement or an upper limit for the size of the memory in the system and this capacity is linked to the number of the internal nodes in the network.
+
+Separation: This necessarily means a certain type of injectivity: different input sequences are mapped to different points in the higher-dimensional space.
+
+Something characteristic for quantum reservoir computing is the fact that the data for the readout layer is obtained by measuring expectation values for various observables on every qubit or pair of qubits. We will see more examples of this later. These expectation values then work as input for the linear layer.
+
+Finally, the important feature of reservoir computing and quantum reservoir computing is its universality. This means that certain classes of reservoir computing models are universal approximators.
+
+https://chatgpt.com/share/6a6c6895-fd94-83ed-8ed6-c62524946d4d" style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:64px 72px;display:flex;flex-direction:column;gap:32px;" data-om-slide-id="387dc46f">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:18px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 04 ·&nbsp;<span style="letter-spacing: 3.12px;">BACKground</span></div>
+        <h2 style="margin:12px 0 0;font:600 56px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Some defining properties for reservoir computing</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:22px;min-height:0;">
+
+      <div style="perspective:1600px;min-height:0;cursor:pointer;" role="button" tabindex="0" onClick="{{ f1 }}">
+        <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,.72,.24,1);cursor:pointer;transform:rotateY({{ r1 }}deg);">
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;">
+            
+            <h3 style="margin:0;font:600 32px/1.1 'Source Serif 4',Georgia,serif;">Echo state property</h3>
+            <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 200 92" style="width: 567px; height: 192px; max-height: 210px" fill="none">
+                <path d="M6 12 C60 34 96 50 194 55" stroke="#28697a" stroke-width="2.4"></path>
+                <path d="M6 82 C60 68 104 60 194 57" stroke="#8c5731" stroke-width="2.4"></path>
+                <circle cx="6" cy="12" r="4" fill="#28697a"></circle>
+                <circle cx="6" cy="82" r="4" fill="#8c5731"></circle>
+                <path d="M150 20 L150 88" stroke="#c9bfb2" stroke-width="1.4" stroke-dasharray="4 5"></path>
+                <text x="152" y="18" fill="#a89a89" style="font:600 13.5px 'JetBrains Mono',monospace;">forget x₀</text>
+              </svg>
+            </div>
+            <div style="font:500 14px/1.2 'JetBrains Mono',monospace;letter-spacing:.07em;color:#b3a695;">click for definition</div>
+          </div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#2f2b27;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;color:#f6f2ec;cursor:pointer;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#7fb8c4;">echo state property</div>
+            
+            <div style="background: #3b3630; border-radius: 8px; padding: 14px 16px; width: 485px; height: 55px"><tex-math display="" size="21px" color="#f0eae0" style="font-size: 26px">\bigl\| x_t(x_0^{A},u_n) - x_t(x_0^{B},u_n) \bigr\| \to 0, \quad n\to \infty</tex-math></div><p style="margin: 0; font: 400 17px/1.5 'IBM Plex Sans',system-ui,sans-serif; color: #cfc6ba; text-wrap: pretty; font-size: 24px">The distance between the states in which the system is driven after being fed by the same input sequence, but starting from different initial conditions, approaches 0 as the length of the input sequence grows.</p><div style="margin-top: auto; font: 400 14px/1.5 'JetBrains Mono',monospace; color: #9a8f81; width: 570px; height: 154px">[1]&nbsp;Echo State Property of Deep Reservoir Computing Networks.&nbsp;Claudio Gallicchio &amp; Alessio Micheli. 2017.</div>
+            
+          </div>
+        </div>
+      </div>
+
+      <div style="perspective:1600px;min-height:0;cursor:pointer;" role="button" tabindex="0" onClick="{{ f2 }}">
+        <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,.72,.24,1);cursor:pointer;transform:rotateY({{ r2 }}deg);">
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;">
+            
+            <h3 style="margin:0;font:600 32px/1.1 'Source Serif 4',Georgia,serif;">Fading memory</h3>
+            <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 200 92" style="width:100%;height:100%;max-height:210px;" fill="none">
+                <line x1="4" y1="84" x2="196" y2="84" stroke="#e2dad0" stroke-width="1.6"></line>
+                <rect x="6" y="14" width="18" height="70" rx="2" fill="#28697a"></rect>
+                <rect x="32" y="32" width="18" height="52" rx="2" fill="#3c8496"></rect>
+                <rect x="58" y="48" width="18" height="36" rx="2" fill="#5d9fae"></rect>
+                <rect x="84" y="60" width="18" height="24" rx="2" fill="#8ab9c4"></rect>
+                <rect x="110" y="69" width="18" height="15" rx="2" fill="#aecfd6"></rect>
+                <rect x="136" y="75" width="18" height="9" rx="2" fill="#cbe0e4"></rect>
+                <rect x="162" y="79" width="18" height="5" rx="2" fill="#dfeaec"></rect>
+                <text x="6" y="8" fill="#a89a89" style="font:600 13.5px 'JetBrains Mono',monospace;">now</text>
+                <text x="150" y="8" fill="#a89a89" style="font:600 13.5px 'JetBrains Mono',monospace;">t − k</text>
+              </svg>
+            </div>
+            <div style="font:500 14px/1.2 'JetBrains Mono',monospace;letter-spacing:.07em;color:#b3a695;">click for definition</div>
+          </div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#2f2b27;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;color:#f6f2ec;cursor:pointer;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#7fb8c4;">fading memory</div>
+            <div style="background:#3b3630;border-radius:8px;padding:14px 16px;"><tex-math display="" size="21px" color="#f0eae0" style="width: 493px; height: 63px; font-size: 26px">\sum_{k=0}^{\infty}\omega_k ||u_{t-k}^A - u_{t-k}^B|| &lt; \delta \Rightarrow \|x^{A}_t - x^{B}_t\| &lt; \varepsilon</tex-math></div>
+            <p style="margin: 0; font: 400 17px/1.5 'IBM Plex Sans',system-ui,sans-serif; color: #cfc6ba; text-wrap: pretty; font-size: 26px">The recent inputs are more represented in the outputs than older ones. Recent inputs dominate, and distant ones decay smoothly.</p>
+            <div style="margin-top:auto;font:400 14px/1.5 'JetBrains Mono',monospace;color:#9a8f81;">[2] Fading Memory and the Problem of Approximating Nonlinear Operators with Volterra Series.&nbsp;S. Boyd and L. O. Chua. 1985.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="perspective:1600px;min-height:0;cursor:pointer;" role="button" tabindex="0" onClick="{{ f3 }}">
+        <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,.72,.24,1);cursor:pointer;transform:rotateY({{ r3 }}deg);">
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;">
+            
+            <h3 style="margin:0;font:600 32px/1.1 'Source Serif 4',Georgia,serif;">Memory capacity</h3>
+            <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 200 92" style="width:100%;height:100%;max-height:210px;" fill="none">
+                <path d="M10 18 C48 20 70 34 96 54 C124 74 156 82 190 84 L190 84 L10 84 Z" fill="#dfeaec"></path>
+                <path d="M10 18 C48 20 70 34 96 54 C124 74 156 82 190 84" stroke="#28697a" stroke-width="2.6"></path>
+                <line x1="10" y1="84" x2="194" y2="84" stroke="#c9bfb2" stroke-width="1.6"></line>
+                <line x1="10" y1="10" x2="10" y2="84" stroke="#c9bfb2" stroke-width="1.6"></line>
+                <text x="14" y="8" fill="#a89a89" style="font:600 13.5px 'JetBrains Mono',monospace;">m(k)</text>
+                <text x="172" y="76" fill="#a89a89" style="font:600 13.5px 'JetBrains Mono',monospace;">k</text>
+              </svg>
+            </div>
+            <div style="font:500 14px/1.2 'JetBrains Mono',monospace;letter-spacing:.07em;color:#b3a695;">click for definition</div>
+          </div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#2f2b27;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;color:#f6f2ec;cursor:pointer;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#7fb8c4;">memory capacity</div>
+            <div style="background:#3b3630;border-radius:8px;padding:14px 16px;"><tex-math display="" size="21px" color="#f0eae0" style="font-size: 23px; width: 501px; height: 59px">MC \leq N, \quad MC=\sum_{k\ge1} m(k),\quad m(k)=\frac{\mathrm{cov}^2(u_{t-k},\hat{y}_{k,t})}{\sigma^2_u\,\sigma^2_{\hat{y}_k}}</tex-math></div>
+            <p style="margin: 0; font: 400 17px/1.5 'IBM Plex Sans',system-ui,sans-serif; color: #cfc6ba; text-wrap: pretty; font-size: 26px">The linear Memory Capacity (MC) of a standard reservoir is limited by the number of internal nodes.</p>
+            <div style="margin-top:auto;font:400 14px/1.5 'JetBrains Mono',monospace;color:#9a8f81;">[3]&nbsp;Short term memory in echo state networks. Herbert Jaeger. 2002.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="perspective:1600px;min-height:0;cursor:pointer;" role="button" tabindex="0" onClick="{{ f4 }}">
+        <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,.72,.24,1);cursor:pointer;transform:rotateY({{ r4 }}deg);">
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;">
+            
+            <h3 style="margin:0;font:600 32px/1.1 'Source Serif 4',Georgia,serif;">Separation</h3>
+            <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 200 92" style="width:100%;height:100%;max-height:210px;" fill="none">
+                <path d="M6 24 l8 -8 l8 14 l8 -12 l8 10 l8 -6" stroke="#28697a" stroke-width="2.2"></path>
+                <path d="M6 70 l8 -6 l8 12 l8 -14 l8 8 l8 -4" stroke="#8c5731" stroke-width="2.2"></path>
+                <path d="M64 46 L94 46" stroke="#c9bfb2" stroke-width="2"></path>
+                <path d="M88 41 L95 46 L88 51 Z" fill="#c9bfb2"></path>
+                <rect x="104" y="8" width="90" height="76" rx="8" stroke="#e2dad0" stroke-width="1.6"></rect>
+                <circle cx="126" cy="28" r="5" fill="#28697a"></circle>
+                <circle cx="136" cy="22" r="3.4" fill="#28697a" opacity="0.55"></circle>
+                <circle cx="120" cy="38" r="3.4" fill="#28697a" opacity="0.55"></circle>
+                <circle cx="170" cy="66" r="5" fill="#8c5731"></circle>
+                <circle cx="160" cy="72" r="3.4" fill="#8c5731" opacity="0.55"></circle>
+                <circle cx="176" cy="55" r="3.4" fill="#8c5731" opacity="0.55"></circle>
+              </svg>
+            </div>
+            <div style="font:500 14px/1.2 'JetBrains Mono',monospace;letter-spacing:.07em;color:#b3a695;">click for definition</div>
+          </div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#2f2b27;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;color:#f6f2ec;cursor:pointer;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#7fb8c4;">separation property</div>
+            <div style="background:#3b3630;border-radius:8px;padding:14px 16px;"><tex-math display="" size="21px" color="#f0eae0" style="font-size: 26px">||u^{A}_{\leq t} - u^{B}_{\leq t }|| \geq \delta \;\Longrightarrow\; ||x(u^{A}_{\leq t}) - x(u^{B}_{\leq t})|| \geq \varepsilon</tex-math></div>
+            <p style="margin: 0; font: 400 17px/1.5 'IBM Plex Sans',system-ui,sans-serif; color: #cfc6ba; text-wrap: pretty; font-size: 26px">Distinct input sequences are mapped to distinct states.</p>
+            <div style="margin-top:auto;font:400 14px/1.5 'JetBrains Mono',monospace;color:#9a8f81;">[4]&nbsp;Real-Time Computing Without Stable States: A New Framework for Neural Computation Based on Perturbations.&nbsp;Wolfgang Maass, Thomas Natschl¨ager, and Henry Markram. 2002.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="perspective:1600px;min-height:0;cursor:pointer;" role="button" tabindex="0" onClick="{{ f5 }}">
+        <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,.72,.24,1);cursor:pointer;transform:rotateY({{ r5 }}deg);">
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;">
+            
+            <h3 style="margin:0;font:600 32px/1.1 'Source Serif 4',Georgia,serif;">Readout</h3>
+            <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 200 92" style="width:100%;height:100%;max-height:210px;" fill="none">
+                <circle cx="46" cy="46" r="40" stroke="#e2dad0" stroke-width="1.6"></circle>
+                <circle cx="30" cy="30" r="3.2" fill="#c9bfb2"></circle>
+                <circle cx="58" cy="24" r="3.2" fill="#c9bfb2"></circle>
+                <circle cx="22" cy="56" r="3.2" fill="#c9bfb2"></circle>
+                <circle cx="46" cy="46" r="3.2" fill="#c9bfb2"></circle>
+                <circle cx="62" cy="62" r="3.2" fill="#c9bfb2"></circle>
+                <circle cx="70" cy="42" r="5" fill="#28697a"></circle>
+                <circle cx="52" cy="70" r="5" fill="#28697a"></circle>
+                <circle cx="56" cy="18" r="5" fill="#28697a"></circle>
+                <path d="M70 42 L136 46 M52 70 L136 50 M56 18 L136 42" stroke="#28697a" stroke-width="1.6"></path>
+                <rect x="136" y="34" width="54" height="24" rx="5" fill="#2f2b27"></rect>
+                <text x="163" y="51" text-anchor="middle" fill="#f6f2ec" style="font:700 14px 'JetBrains Mono',monospace;">W_out</text>
+              </svg>
+            </div>
+            <div style="font:500 14px/1.2 'JetBrains Mono',monospace;letter-spacing:.07em;color:#b3a695;">click for definition</div>
+          </div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#2f2b27;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;color:#f6f2ec;cursor:pointer;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#7fb8c4;">readout accessibility</div>
+            <div style="background:#3b3630;border-radius:8px;padding:14px 16px;"><tex-math display="" size="21px" color="#f0eae0">\hat y_t = W_{\mathrm{out}}\,s_t,\quad s_t=\bigl(\langle O_i\rangle_{\rho_t}\bigr)_{i=1}^{M}</tex-math></div>
+            <p style="margin: 0; font: 400 17px/1.5 'IBM Plex Sans',system-ui,sans-serif; color: #cfc6ba; text-wrap: pretty; font-size: 26px">Targets are obtained by applying readout to M measured observables .</p>
+            <div style="margin-top:auto;font:400 14px/1.5 'JetBrains Mono',monospace;color:#9a8f81;">[5]&nbsp;Potential and limitations of quantum extreme learning machines.&nbsp;L. Innocenti, S. Lorenzo, I. Palmisano, A. Ferraro, M. Paternostro &amp; G. M. Palma. 2023.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="perspective:1600px;min-height:0;cursor:pointer;" role="button" tabindex="0" onClick="{{ f6 }}">
+        <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,.72,.24,1);cursor:pointer;transform:rotateY({{ r6 }}deg);">
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;">
+            
+            <h3 style="margin:0;font:600 32px/1.1 'Source Serif 4',Georgia,serif;">Universality</h3>
+            <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 200 92" style="width:100%;height:100%;max-height:210px;" fill="none">
+                <path d="M8 62 C34 12 58 84 84 34 C110 -2 136 74 162 40 C176 22 186 30 194 26" stroke="#c9bfb2" stroke-width="5" stroke-linecap="round"></path>
+                <path d="M8 62 C34 12 58 84 84 34 C110 -2 136 74 162 40 C176 22 186 30 194 26" stroke="#28697a" stroke-width="2.2" stroke-dasharray="7 6"></path>
+                <text x="8" y="88" fill="#a89a89" style="font:600 13.5px 'JetBrains Mono',monospace;">target</text>
+                <text x="140" y="88" fill="#28697a" style="font:600 13.5px 'JetBrains Mono',monospace;">reservoir</text>
+              </svg>
+            </div>
+            <div style="font:500 14px/1.2 'JetBrains Mono',monospace;letter-spacing:.07em;color:#b3a695;">click for definition</div>
+          </div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#2f2b27;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;color:#f6f2ec;cursor:pointer;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#7fb8c4;">universality</div>
+            <div style="background:#3b3630;border-radius:8px;padding:14px 16px;"><tex-math display="" size="21px" color="#f0eae0" style="font-size: 26px">\forall\, F,\ \varepsilon&gt;0\ \ \exists\, W_{\mathrm{out}}:\ \sup_{u}\|F(u)-\hat y(u)\|&lt;\varepsilon</tex-math></div>
+            <p style="margin: 0; font: 400 17px/1.5 'IBM Plex Sans',system-ui,sans-serif; color: #cfc6ba; text-wrap: pretty; font-size: 26px">Classes of reservoir computing models are universal approximators.</p>
+            <div style="margin-top:auto;font:400 14px/1.5 'JetBrains Mono',monospace;color:#9a8f81;">[6]&nbsp;Reservoir Computing Universality With Stochastic Inputs.&nbsp;Lukas Gonon, Juan-Pablo Ortega. 2018.<br>[7]&nbsp;Dissipation as a resource for Quantum Reservoir Computing.&nbsp;Antonio Sannia, Rodrigo Martínez-Peña, Miguel C. Soriano, Gian Luca Giorgi, Roberta Zambrini. 2024<br></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section data-label="The task" data-screen-label="06" data-speaker-notes="Let's start building this use case and show how experiment tracking can support us. Let's start logically from the learning task and the data.
+
+The learning task is to predict elements in the Mackey-Glass time series dataset across some time horizon. Mackey-Glass is a delay differential equation and is chaotic for tau values above about 16.8. We can drag tau and watch the data change shape. As tau gets smaller, the chaotic behavior disappears. As you can see in the code, we should simply track the tau value as well as the dataset name, which is done here on the two lines. As you can see, this is super simple.
+
+The next element is the series length: we can increase the number of points or decrease it, and it should be tracked as well.
+
+We have used this mackey_glass function to generate this data and it requires a seed because the outputted data from the function is pseudorandom and the seed should be naturally tracked. As you can see, by changing the seed, we can change the time series data.
+
+In the code you can see that we do a scaling trick and scaling is, at least in my experience, really important in these applications. Here, u_hi is the washout + fit region's 99.5th percentile. So we could use max here, but max is not necessarily optimal because we might have a rare spike event that leads to suboptimal scaling. We also leave out validation and test data. 
+
+Using this u_hi we scale the input sequence roughly to the [0,1] interval: we clip rare values above u_hi to 1. Then we half this interval because we use angle encoding in the circuit. These values are scaled because we necessarily need a bounded values for encoding, we get a better regime where the model works. And generally this type of scaling is common in machine learning. Nevertheless, this creates more params to track and these params now depend on the selected hyperparameters in the previous lineas.  
+
+Finally, the horizon is simply the value that we aim to predict. 
+
+delay τ — the feedback delay in the Mackey-Glass equation. It sets how far back the system's own past drives it; above τ ≈ 16.8 the series becomes chaotic. Higher τ = harder task.
+
+series length T — how many time steps are generated in total. It's split 60% train (first 100 discarded as washout) / validation / rolling test, so T changes the size of every slice at once.
+
+seed — which random realisation you get: the initial history of the series, and the reservoir's random weights. Two runs differing only in seed are different experiments.
+
+horizon h — how far ahead you predict; the target is y[t + h]. Larger h needs longer memory and error grows fast in a chaotic regime.
+
+time step t (the axis, formerly &quot;bin index&quot;) — index of the generated sample, one per integration step of the equation; it runs 0 … T−1 left to right. " style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:22px;" data-om-slide-id="1ed3d8c5">
+    
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 06 · the pipeline</div>
+        <h2 style="margin:12px 0 0;font:600 52px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Define the learning task</h2>
+      </div>
+      <div style="font: 400 30px/1.5 'IBM Plex Sans',system-ui,sans-serif; color: #6b6359; text-align: right; width: 803px; height: 84px"><tex-math size="32px">\dot{x} = \dfrac{a\,x(t-\tau)}{1 + x(t-\tau)^{n}} - b\,x(t)</tex-math> — chaotic for <tex-math size="32px">\tau \gtrsim 17</tex-math>. Predict <tex-math size="32px">y[t+h]</tex-math>.</div>
+    </div><div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:22px;position:relative;">
+      <div style="min-height:0;display:flex;flex-direction:column;gap:12px;">
+        <mg-lab style="width: 903px; flex: 1; min-height: 0; height: 730px"></mg-lab>
+        <div style="flex:none;font:400 26px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#6b6359;">The “echo state” approach to analysing and training recurrent neural networks. Herbert Jaeger. 2010.</div>
+      </div>
+      <py-code file="Example logging" hl="3,4,5,6,11,12,13,14" size="25" style="width:100%;height:100%;">
+        y = mackey_glass(series_length, tau=17, seed=seed).flatten()
+
+        mlflow.log_param("dataset", dataset)
+        mlflow.log_param("tau", tau)
+        mlflow.log_param("series_length", series_length)
+        mlflow.log_param("seed", seed)
+
+        u_hi  = np.quantile(y[:val_start], 0.995)
+        u_seq = np.clip(y / u_hi, 0.0, 1.0) * 0.5
+
+        mlflow.log_param("input_scaling/fit_range", "pre_validation")
+        mlflow.log_param("input_scaling/u_hi", float(u_hi))
+        mlflow.log_param("washout", WASHOUT)
+        mlflow.log_param("retrain_every", RETRAIN_EVERY)
+      </py-code>
+    </div>
+  </section><section data-label="The model" data-screen-label="07" data-speaker-notes="We will not talk much about classical reservoir computing, so let's immediately focus on the quantum reservoir computing part. We implement this as dissipative quantum reservoir computing.
+
+What this means is the following. First, we construct an input-dependent Hamiltonian. Every point in the time series produces a single unitary step in the time evolution. Now this unitary is defined by the following generating Hamiltonian. It contains three coefficients, h_i, J_i, and w_i, which are random constants drawn uniformly from [0.5, 1,5] and scaled. So the data affects only this sum of Z operators. 
+
+Then we implement the unitary evolution as a sequence of these unitary applications. Initially, we start from the zero state, apply the unitary corresponding to t = 1, apply a controlled dissipative step, and estimate expectation values for a list of observables. More about these observables comes in the next slide.  The dissipative step is important, and it is the one that implements the fading memory that is required. Depending on the size of gamma, we can control how much is forgotten, or reset back to the zero state. Note that then this \rho_t goes back to the previous step, and we apply the next unitary to that state instead of applying it to the zero state.
+
+On the right-hand side, you can see a reference implementation in Qiskit to make this construction more concrete. Qiskit actually natively supports this dissipative step via reset error and I believe this type of controlled &quot;error&quot; might be something that the hardware will support too. Note the color code here. The first step constructs the Hamiltonian from the data, the next step creates the dissipative noise model, and finally, at this stage, we apply the unitary. 
+
+Finally, a small detail is that this error is applied so that we attach an identity gate at the end here, and the error is attached to this gate. So instead of applying the error directly, we apply it via an identity gate. This is just a technical detail in the code but might be confusing.
+
+I didn't write down very specifically what one would like to track here, but there is a lot of information to store, especially if we were to move this to real hardware. We want to keep track of seed that are used to generate the coefficients and we also want possibly store the coefficient. Then, we might want to store the original circuits as well as those that are compiled for the hardware. Considering real hardware, we want to keep track of the qubit mapping, noise model as well as store the time when the noise model was retrieved. 
+" style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:24px;" data-om-slide-id="c503aaf5">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 07 ·&nbsp;<span style="letter-spacing: 3.12px;">BACKground on quantum reservoir computing</span></div>
+        <h2 style="margin:12px 0 0;font:600 52px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Dissipative quantum reservoir computing</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.1fr;gap:24px;">
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:28px 34px;display:flex;flex-direction:column;gap:16px;min-height:0;position:relative;">
+        <div style="display:flex;flex-direction:column;gap:10px;border-left:4px solid #3d7d8c;background:rgba(61,125,140,.07);border-radius:6px;padding:10px 14px;">
+          <div style="font:600 26px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#3d7d8c;">1. Construct input-dependent Hamiltonian</div>
+          <tex-math display="" size="29px" color="#2f2b27" style="font-size: 32px">H(u_t) = \sum_i h_i X_i + \sum_i J_i Z_i Z_{i+1} + u_t \sum_i w_i Z_i</tex-math>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:5px 16px;font:400 25px/1.28 'IBM Plex Sans',system-ui,sans-serif;color:#6b6359;">
+            <div style="font:italic 400 25px 'IBM Plex Serif',Georgia,serif;color:#2f2b27;">u<sub>t</sub></div><div>input time series: sample <em>t</em> of the scaled sequence <em>u</em></div>
+            <div style="font:italic 400 25px 'IBM Plex Serif',Georgia,serif;color:#2f2b27;">w<sub>i</sub></div><div>how much of&nbsp;&nbsp;<em>u<sub>t</sub></em> reaches qubit <em>i</em></div>
+            <div style="font:italic 400 25px 'IBM Plex Serif',Georgia,serif;color:#2f2b27;">h<sub>i</sub>, J<sub>i</sub></div><div style="width: 639px; height: 61px">fixed linear and quadratic coefficients and independent of input&nbsp;<em>u</em></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;border-left:4px solid #a06a45;background:rgba(160,106,69,.07);border-radius:6px;padding:10px 14px;">
+          <div style="font:600 26px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#a06a45;">2. unitary evolution</div>
+          <tex-math display="" size="29px" color="#2f2b27" style="font-size: 32px">\tilde{\rho}_t = U(u_t)\,\rho_{t-1}\,U(u_t)^{\dagger}, \qquad U(u_t) = \exp\!\left(-i\,H(u_t)\,\tau\right)</tex-math>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; border-left: 4px solid #7b6597; background: rgba(123,101,151,.07); border-radius: 6px; padding: 10px 14px; width: 737px; height: 216px">
+          <div style="font:600 26px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#7b6597;">3. Apply the dissipative step, where memory fades</div>
+          <tex-math display="" size="29px" color="#2f2b27" style="font-size: 32px">\rho_t = (1-\gamma)\,\tilde{\rho}_t + \gamma\,|0\ldots 0\rangle\langle 0\ldots 0|</tex-math>
+        </div>
+        <div style="margin-top: auto; padding-top: 12px; border-top: 1px solid #e2dad0; width: 759px; height: 86px"><a href="https://qiskit.github.io/qiskit-aer/stubs/qiskit_aer.noise.reset_error.html" target="_blank" rel="noopener noreferrer" style="font-size: 26px; color: #6f675e; word-break: break-all; width: 829px; height: 66px">https://qiskit.github.io/qiskit-aer/stubs/qiskit_aer.noise.reset_error.html</a></div>
+        </div>
+      <py-code file="Qiskit reference implementation" size="30" hlgroups="#3d7d8c=1-7;#a06a45=16,17;#7b6597=9-12,18">
+        # 1. Hamiltonian: field + ZZ chain + the input drive
+        def hamiltonian(u):
+            field = [("X", [i], h[i]) for i in range(n)]
+            chain = [("ZZ", [i, i+1], J[i]) for i in range(n-1)]
+            drive = [("Z", [i], u * w[i]) for i in range(n)]
+            return SparsePauliOp.from_sparse_list(
+                field + chain + drive, num_qubits=n)
+
+        # 3. dissipation = reset each qubit with probability gamma
+        noise = NoiseModel()
+        noise.add_all_qubit_quantum_error(reset_error(gamma), "id")
+        sim = AerSimulator(method="density_matrix", noise_model=noise)
+
+        qc = QuantumCircuit(n)
+        for t, u in enumerate(inputs):
+            evo = PauliEvolutionGate(hamiltonian(u), time=tau)
+            qc.append(evo, range(n))   # 2. rho &lt;- U rho U+
+            qc.id(range(n))            # 3. partial reset to |0..0&gt;
+            qc.save_density_matrix(label=f"t{t}")
+      </py-code>
+    </div>
+  </section><section data-label="ESN vs QRC" data-screen-label="05" data-speaker-notes="Let's then look at the actual measurements that are performed after each dissipative step. In practice, we have a list of measurement operators whose expectation values we are going to estimate. We naturally need to track these operators as well. The heatmaps aim to show us the dynamics and relative sizes instead of absolute numbers. This is better because the features live on wildly different scales so the relative sizes are better to visualize. Nevertheless you can see how there is interesting structure that emerges from both reservoir measurements.
+
+Here, both figures are based on the same Mackey-Glass input time series. Rows are features, columns are time. On the left-hand side, we have the classical echo state network, and on the right-hand side, we have the quantum reservoir model, which we described on the previous slide. Now the classical model has a state of size 64. This state size is not fixed to anything but also a model parameter that should be adjusted and tracked. Now the classical model can use all 64 dimensions as an input to the readout layer. The quantum state is naturally 2^n where n = 4 currently. Then, for 4 qubits, we choose to measure X, Y, Z expectation values on each qubit: 4 x 3 = 12 features, and ZZ values for qubits 01, 02, 03, 12, 13, 23. This is an 18-dimensional vector, which is the input for the readout layer. Alternatively, we can choose different measurement patterns, for example, remove Y and X observables or measure only single-qubit Z observables. This naturally simplifies the landscape. We can also adjust how the fading memory behaves. For the quantum model, it is controlled by this gamma, and for the classical model, it is a leak rate parameter. As one can see, there are counteless knobs to tune and quantum has even more than classical:
+
+Classical ESN — 5
+
+nUnits — reservoir size
+leak — leak rate α (memory decay)
+sr — spectral radius of W
+inputScale — input weight scale
+seed — draws W and W_in
+
+Quantum QRC — 11
+
+nQubits — reservoir size
+gamma — dissipation / memory decay
+tau — evolution time per step
+hScale — scale on the transverse field hᵢ
+JScale — scale on the coupling Jᵢ
+inputScale — scale on the input weights wᵢ
+seed — draws hᵢ, Jᵢ, wᵢ
+includeZZ — two-body observables in the readout
+includeXYZ — X/Y observables in the readout
+nULevels — input quantization (how many distinct unitaries get cached)
+rho0 — initial state
+
+Vertical banding — a vertical stripe means many rows change colour at the same instant, in the same direction. All those features are saying the same thing about the same input event. You nominally have 64 features but they're carrying maybe a handful of distinct signals; the readout has less to work with than the count suggests.
+
+Rows with different texture — the opposite case. One row oscillates fast, another drifts slowly, another responds a few steps late. Those are genuinely different views of the input history, which is what you want: the readout is a linear combination, so it can only do something interesting if the rows differ.
+
+High γ. The state is yanked back toward |0…0⟩ almost every step. So ρₜ barely depends on ρₜ₋₁ — it's essentially a function of uₜ alone. Every feature is then a different function of the same single number, so all rows change at the same instant, in lockstep. That's the crisp vertical banding you see. No memory means maximal redundancy: nominally 18 features, effectively one degree of freedom re-expressed 18 ways. The readout can fit an instantaneous map of uₜ and nothing else — useless for a task that needs history.
+
+Low γ. Now ρₜ carries a long weighted history. Each observable integrates that history through its own dynamics — different frequencies, different phases, different effective delays. The rows stop agreeing about when &quot;now&quot; is, so the vertical alignment dissolves and you get fine, irregular, row-specific texture instead. That's what you're calling &quot;shorter&quot; — it isn't shorter memory, it's desynchronised rows: many superposed timescales produce finer-grained structure than one shared beat does.
+
+Comparing panels — the ESN rows tend to look like smoothed copies of one another. The QRC's ⟨X⟩ and ⟨ZZ⟩ rows show faster and more varied structure, because different observables of the same evolving state respond on different timescales. More variety per feature." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:24px;" data-om-slide-id="11ff1375">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 05 · the paradigm</div><h2 style="margin: 12px 0 0; font: 600 52px/1.08 'Source Serif 4',Georgia,serif; letter-spacing: -0.008em; width: 1403px; height: 92px">Classical and quantum have similarities but also different state spaces</h2>
+        
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+        <div style="font: 600 27px/1.2 'IBM Plex Sans',system-ui,sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #6f675e; width: 423px; height: 60px">feature value vs. its own mean</div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="font:400 27px/1.2 'JetBrains Mono',monospace;color:#8c5731;">below</div>
+          <div style="width:230px;height:19px;border-radius:3px;background:linear-gradient(90deg,#8c5731 0%,#f6f2ec 50%,#28697a 100%);border:1px solid #e2dad0;"></div>
+          <div style="font:400 27px/1.2 'JetBrains Mono',monospace;color:#28697a;">above</div>
+        </div>
+        <div style="font:400 24px/1.2 'IBM Plex Sans',system-ui,sans-serif;color:#8a8177;">each row scaled independently</div>
+      </div>
+    </div>
+    <div style="flex:none;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="font:600 35px/1.1 'Source Serif 4',Georgia,serif;color:#2f2b27;">Classical Echo State Network (ESN)</div>
+        
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="font:600 35px/1.1 'Source Serif 4',Georgia,serif;color:#2f2b27;">Dissipative Quantum Reservoir Computing (QRC)</div>
+        
+      </div>
+    </div>
+    <div style="flex:1;min-height:0;"><esn-vs-qrc></esn-vs-qrc></div>
+    
+  </section>
+
+  
+
+  
+
+  <section data-label="The reservoir, live" data-screen-label="08" data-speaker-notes="Let's still study another heatmap briefly and look at how the tracked hyperparameters affect the echo state property. The echo state property means that the reservoir computing model should converge to the same point, regardless of the initial starting point, given the same sequential data. The distance between a run started in |0..0&gt; and one started in |1..1&gt; but otherwise the same input and the same hyperparameters. Now what we can observe here is that if we necessarily remove 
+
+This is not a distance between quantum states in trace norm — it's the distance as the readout sees it, in the same observable space the ridge regression is fit on. That's deliberate: what matters for learning is whether the features the readout consumes still depend on where you started.
+
+At t = 0 the two are maximally far apart (opposite computational basis states). Under the same drive, the dissipative part of the map contracts them toward each other at roughly (1−γ) per step; the unitary part alone would not. One can note that changing the number of qubits, evolution time and measurement operators does not substantially change the curve. 
+
+The &quot;forgotten&quot; line. A threshold picked at 10⁻⁶, not a physical constant. It marks where the two trajectories have converged to the point of practical irrelevance: the residual difference in any feature is a millionth of its dynamic range, far below what any realistic shot budget could resolve, and orders of magnitude below the ridge regression's own noise floor. Once the curve crosses it, the reservoir's state is a function of the input history alone — the echo state property, satisfied in practice.
+
+Where the curve crosses it is the useful quantity: that's your washout length. If it crosses at t = 40, discarding the first 100 steps is safe; if it never crosses, no washout is long enough and the run is not reproducible from parameters, since the result depends on an initial state nobody logged." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:22px;" data-om-slide-id="7bd60b71">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 08 · the pipeline</div>
+        <h2 style="margin:12px 0 0;font:600 52px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Demonstrating echo state property</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;min-height:0;"><dqrc-lab style="width: 1800px; height: 833px"></dqrc-lab></div>
+  </section>
+
+  
+
+  <section data-label="The readout" data-screen-label="10" data-speaker-notes="Alright, so far we have built the quantum reservoir computing model, run it either in a simulator or, ideally, on real hardware, and tracked many aspects of the model for possible later use. Now we are at the phase where we have collected those high-dimensional embeddings from the measurement data. The next step is to use a simple classical regression model to fit the targets. For this purpose, we use a Ridge model.
+
+In the plot, we have the current &quot;unfitted&quot; predictions and the target plot. By clicking fit readout, the optimization happens, and we see how the training part is fitted and test accuracy increases. With different dissipation value, the results are worse. The readout memory here does not refer to qubits but to the classical model: it is a second memory in this case. It considers k steps behind the current step.
+
+On the right-hand side, you see a code example. The code consists of two functions: fit window from the training data and the rolling test. In many ways, this is a standard regression model.
+
+F — the feature matrix from the reservoir. Shape T × (k × observables); row t is the readout's input at time t. Frozen: the quantum part has already run.
+y — the target series (Mackey-Glass), same time base as F.
+h — forecast horizon. You predict y[t+h] from F[t]. In your deck h = 12.
+T — number of timesteps.
+WASHOUT — how many initial steps to discard. The reservoir starts in |0…0⟩, which is not a state the input would ever have produced, so early rows are contaminated by the arbitrary initial condition. Drop them.
+train_end — index where training data ends and evaluation begins.
+STEP — how often to refit (your RETRAIN_EVERY).
+lo, hi — training slice bounds. plo, phi — prediction slice bounds. Kept separate so you can fit on one window and predict on a different one.
+alpha — ridge penalty. GAMMAS, ALPHAS — the grids being searched. feats[g] — the feature matrix produced with dissipation γ = g; one per γ, precomputed.
+
+Probably the most relevant lines in this code are the highlighted ones. We can again use MLflow to do experiment tracking and store the classical model's best hyperparameters, best score R^2 value and grid which is the validation surface — every (γ, α) combination and the score it got, not just the winner.
+{ gamma: 0.05, alpha: 1,   val_r2: 0.97312 }
+{ gamma: 0.05, alpha: 10,  val_r2: 0.96884 }
+{ gamma: 0.25, alpha: 1,   val_r2: 0.94120 }
+
+" style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:24px;" data-om-slide-id="bfd69f66">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 10 · the pipeline</div>
+        <h2 style="margin:12px 0 0;font:600 52px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">The readout phase: fitting regression model to the measured values</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.02fr;gap:24px;">
+      <readout-lab style="min-height: 0; width: 1079px; height: 837px"></readout-lab>
+      <py-code file="Readout fitting" hlgroups="#28697a=16-19" size="28" style="width: 721px; height: 821px">
+        def fit_window(F, h, lo, hi, plo, phi, alpha):
+            model = make_pipeline(
+                StandardScaler(), Ridge(alpha=alpha))
+            model.fit(F[lo:hi], y[lo + h:hi + h])
+            return model.predict(F[plo:phi])
+
+        def rolling_test(F, h, alpha):
+            for o in range(train_end, T - h, STEP):
+                stop = min(o + STEP, T - h)
+                args = (WASHOUT, o - h + 1, o, stop)
+                pred = fit_window(F, h, *args, alpha)
+
+        best_r2, best_g, best_a = max(
+            (validation_r2(feats[g], h, a), g, a)
+            for g in GAMMAS for a in ALPHAS)
+        mlflow.log_param("readout/gamma", best_g)
+        mlflow.log_param("readout/alpha", best_a)
+        mlflow.log_metric("validation/r2", best_r2)
+        mlflow.log_dict(grid, "readout/val_grid.json")
+      </py-code>
+    </div>
+  </section><section data-label="Circuit and compilation" data-screen-label="09" data-speaker-notes="Let's then take a quick look what we could have tracked in the previous experiments so far. This list necessarily overlaps with many previous quantum provenance lists that we saw earlier. 
+
+The code demonstrates how we create a suitable pass manager, compile the circuits and then store various information about them, we also store the noise model and various other metadata. This happens with the same mlflow command. " style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:24px;" data-om-slide-id="5b982205">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 09 · the pipeline</div>
+        <h2 style="margin:12px 0 0;font:600 52px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Examples of metrics and artifacts to track in the experiments</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:0.74fr 1.26fr;gap:24px;">
+      <div style="display:flex;flex-direction:column;min-height:0;">
+        <div style="flex: 1; min-height: 0; background: #ffffff; border: 1px solid #e2dad0; border-radius: 12px; padding: 32px 34px; display: flex; flex-direction: column; gap: 18px; width: 686px; height: 744px">
+          
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:9px 22px;font:400 26px/1.25 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;">
+            <div style="color:#28697a;font:600 24px/1.3 'JetBrains Mono',monospace;">encoding</div><div>encoding method · scaling values</div>
+            <div style="color:#28697a;font:600 24px/1.3 'JetBrains Mono',monospace;">artifact</div><div style="width: 473px; height: 63px">QASM3 per circuit · coupling map</div>
+            <div style="color:#28697a;font:600 24px/1.3 'JetBrains Mono',monospace;">transpilation</div><div>depth · cx/cz count · swaps</div>
+            <div style="color:#28697a;font:600 24px/1.3 'JetBrains Mono',monospace;">transpiler</div><div>opt level · layout &amp; routing method · seeds · basis gates</div>
+            
+            <div style="color:#28697a;font:600 24px/1.3 'JetBrains Mono',monospace;">backend</div><div>name · version · calibration ts · T1/T2 · gate &amp; readout errors</div>
+            <div style="color:#28697a;font:600 24px/1.3 'JetBrains Mono',monospace;">noise</div><div>noise model · error mitigation · shots · seeds</div>
+            <div style="color:#28697a;font:600 24px/1.3 'JetBrains Mono',monospace;">features</div><div>per-timestep observable matrix</div>
+            <div style="color:#28697a;font:600 24px/1.3 'JetBrains Mono',monospace;">timing</div><div>compilation time · execution time · training time</div>
+            <div style="color:#28697a;font:600 24px/1.3 'JetBrains Mono',monospace;">versions</div><div>quantum SDK versions · classical SDK versions</div>
+          </div>
+        </div>
+      </div>
+      <py-code file="Tracking code example" hlgroups="#28697a=12-19" size="30">
+        pm = generate_preset_pass_manager(
+            backend=backend, optimization_level=3,
+            layout_method="sabre", routing_method="sabre",
+            seed_transpiler=1234)
+        tqc = pm.run(circuits)
+        def info(qc):
+            return {"qasm3":  qasm3.dumps(qc),
+                    "layout": qc.layout.final_index_layout(),
+                    "depth":  qc.depth(),
+                    "ops":    dict(qc.count_ops())}
+        meta = {f"t{i:03d}": info(qc) for i, qc in enumerate(tqc)}
+        mlflow.log_dict(meta, "circuits/transpiled.json")
+        mlflow.log_dict(noise.to_dict(), "backend/noise.json")
+        mlflow.log_params({
+            "compilation/optimization_level": 3,
+            "compilation/routing_method":  "sabre",
+            "compilation/seed_transpiler": 1234,
+            "backend/name": backend.name, "execution/shots": shots,
+            "backend/calibration_ts": props.last_update_date})
+      </py-code>
+    </div>
+  </section>
+
+  <section data-label="End to end" data-screen-label="11" data-speaker-notes="Now we should be ready to run every step in a sequence. To recall these steps, we first create the training and test datasets based on Mackey-Glass chaotic time series data, then we perform the angle encoding using the Hamiltonian. Next, we use the generated unitary and dissipative quantum reservoir computing to perform the time evolution. At the end, we measure expectation values for 18 observables. Then we collect the classical baseline. We perform some hyperparameter selection for the classical linear model and finally evaluate the model. In this case, the quantum performs at a comparable level to classical. 
+
+Now the most crucial thing in this slide is that when we execute this pipeline, the parameters, metrics, tags and artifacts are all stored in MLflow. We can open MLflow's graphical user interface and study the values there. They will stay in MLflow's database, supporting reproducibility and other aspects that we have covered in this tutorial. " style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:22px;" data-om-slide-id="240d63c5">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 11 · the pipeline</div>
+        <h2 style="margin:12px 0 0;font:600 52px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Run the whole pipeline</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;min-height:0;"><pipeline-run></pipeline-run></div>
+  </section>
+
+  <section data-label="Noise and mitigation" data-screen-label="13" data-speaker-notes="So far we used on the simulator but real hardware creates additional challenges. A real quantum hardware drifts in a way that the error depends on the calibration and the time when you execute the code. Thus, we should record the error profile as well as the time stamp. Second, if we use error mitigation, mitigation algorithms often rely on error profile and data gathered from the device. Experiment tracking should support this too. Finally, shot noise also enters the picture and we should record the shot count." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:28px;" data-om-slide-id="f9ebc28e">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 13 · the tracking</div>
+        <h2 style="margin:12px 0 0;font:600 52px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">On real hardware, noise and error mitigation are provenance too</h2>
+      </div>
+      <div style="display:flex;gap:20px;font:600 27px 'JetBrains Mono',monospace;">
+        
+      </div>
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);gap:28px;">
+      <div style="background: #ffffff; border: 1px solid #e2dad0; border-radius: 12px; padding: 32px 34px; display: flex; flex-direction: column; gap: 22px; overflow: hidden; width: 508px; height: 476px">
+        <div style="font:600 35px/1.15 'IBM Plex Sans',system-ui,sans-serif;color:#28697a;">Real devices drift<br></div>
+        <p style="margin:0;font:400 29px/1.45 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;text-wrap:pretty;">Recalibration changes the device and, hence, the reservoir. The same configuration will lead to different dynamics and a different model. These changes should be tracked.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;font:400 27px/1.3 'JetBrains Mono',monospace;color:#55504a;margin-top:auto;">
+          <div>calibration_timestamp </div>
+          <div>T1 / T2, gate &amp; readout err </div>
+          <div>backend_version </div>
+        </div>
+      </div>
+      <div style="background: #ffffff; border: 1px solid #e2dad0; border-radius: 12px; padding: 32px 34px; display: flex; flex-direction: column; gap: 22px; overflow: hidden; width: 518px; height: 476px">
+        <div style="font:600 35px/1.15 'IBM Plex Sans',system-ui,sans-serif;color:#28697a;">Error mitigation requires data</div>
+        <p style="margin:0;font:400 29px/1.45 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;text-wrap:pretty;">Error mitigation is increasingly popular but always introduces an overhead and creates a demand for data. This data can be tracked.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;font:400 27px/1.3 'JetBrains Mono',monospace;color:#55504a;margin-top:auto;">
+          <div>mitigation_method / order </div>
+          <div>r2_raw vs r2_mitigated </div>
+          
+        </div>
+      </div>
+      <div style="background: #ffffff; border: 1px solid #8c5731; border-radius: 12px; padding: 32px 34px; display: flex; flex-direction: column; gap: 22px; overflow: hidden; width: 477px; height: 479px">
+        <div style="font: 600 35px/1.15 'IBM Plex Sans',system-ui,sans-serif; color: #28697A">Shot noise enters the features</div>
+        <p style="margin:0;font:400 29px/1.45 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;text-wrap:pretty;">Finite shots make every observable an estimate. Keeping this estimate statistically reliable, we should track the number of shots.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;font:400 27px/1.3 'JetBrains Mono',monospace;color:#55504a;margin-top:auto;">
+          <div>num_shots, seed </div>
+          <div>feature_std_mean </div>
+          <div>noise_model</div>
+        </div>
+      </div>
+    </div>
+    
+  </section>
+
+  
+
+  
+
+  <section data-label="The failure" data-screen-label="14" data-speaker-notes="Let's still run one more motivating example where we use experiment tracking in a realistic scenario. 
+
+First, we run the experiment: what we see here is that the R^2 value is fairly low, especially compared to the R^2 values that we saw earlier from this same model. The classical model beats this. We can also observe that the quantum plot is fairly far from the real target here. 
+
+Let's then dig into the experiment tracking data that we collected. It is good that we collected too much information rather than too little, since we cannot really be sure where the mistake happens. We can compare some of the values and see that while some of them are the same, many of them differ: qubit number, tau, measurements, and features are all different from what they should have been. Alright, let's then fix these. After the fix, the quantum reservoir learning model reaches the same R^2 value that we have been observing and generally the values start looking good. The actual error was related to how the embeddings were cached, and caching requires hashing that depends on the parameters because otherwise the updated model actually reads old cached numbers. (This is actually a real error from my previous research)." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:52px 60px;display:flex;flex-direction:column;gap:20px;" data-om-slide-id="42af99fd">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #8c5731;padding-bottom:16px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#8c5731;">Part 4 · 14 · the tracking · live</div>
+        <h2 style="margin: 12px 0 0; font: 600 52px/1.08 'Source Serif 4',Georgia,serif; letter-spacing: -0.008em; width: 858px; height: 56px">Example: detecting failure with MLflow</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;min-height:0;"><debug-lab style="width: 1808px; height: 861px"></debug-lab></div>
+  </section>
+
+  
+
+  
+
+  
+
+  <section data-label="Takeaways" data-screen-label="18" data-speaker-notes="The use case demonstrated how, in addition to classical metrics and parameters, quantum models introduce new values (e.g., γ) that need to be tracked.
+
+γ has a provable effect to the outcome. These types of parameter effects are hard to catch without proper and comprehensive tracking. After catching them, reasoning about the model and its performance becomes easier.
+
+The Hamiltonian coefficients are constant and randomly generated. Reproducibility relies on recording the seed.
+
+The failure in the experiment was in the cache key, and this would be hard to notice without proper experiment tracking.
+
+Tracking enough data (e.g. the full feature matrix) ensures experiments can restart from the middle. This can save important quantum computing time.
+
+Quantum hardware is noisy and have to be calibrated. This creates differences between runs and requires tracking noise model and other hardware specific parameters that we are not used to track in classical computing." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:64px 80px 56px;display:flex;flex-direction:column;gap:40px;" data-om-slide-id="1bb449b7">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:18px;">
+      <div>
+        <div style="font:600 26px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 18</div><h2 style="margin: 12px 0 0; font: 600 67px/1.06 'Source Serif 4',Georgia,serif; letter-spacing: -0.008em; width: 1828px; height: 120px">Takeaways from the experiment tracking perspective</h2>
+        
+      </div>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:26px 52px;align-content:stretch;">
+      <div style="display:flex;gap:26px;align-items:flex-start;">
+        <div style="font:600 52px/1 'JetBrains Mono',monospace;color:#e2dad0;flex:0 0 auto;">1</div>
+        <div><h3 style="margin:0 0 10px;font:600 39px/1.16 'Source Serif 4',Georgia,serif;color:#28697a;">Quantum reservoir computing doubled the tracked elements</h3></div>
+      </div>
+      <div style="display:flex;gap:26px;align-items:flex-start;">
+        <div style="font:600 52px/1 'JetBrains Mono',monospace;color:#e2dad0;flex:0 0 auto;">4</div>
+        <div><h3 style="margin:0 0 10px;font:600 39px/1.16 'Source Serif 4',Georgia,serif;color:#28697a;">The bug in the failed experiment</h3><div style="margin:0;font:400 29px/1.42 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;text-wrap:pretty;"></div></div>
+      </div>
+      <div style="display:flex;gap:26px;align-items:flex-start;">
+        <div style="font:600 52px/1 'JetBrains Mono',monospace;color:#e2dad0;flex:0 0 auto;">2</div>
+        <div><h3 style="margin:0 0 10px;font:600 39px/1.16 'Source Serif 4',Georgia,serif;color:#28697a;">Only a small amount of parameters had effect</h3></div>
+      </div>
+      <div style="display:flex;gap:26px;align-items:flex-start;">
+        <div style="font:600 52px/1 'JetBrains Mono',monospace;color:#e2dad0;flex:0 0 auto;">5</div>
+        <div><h3 style="margin:0 0 10px;font:600 39px/1.16 'Source Serif 4',Georgia,serif;color:#28697a;">We tracked the full grid and full feature set</h3></div>
+      </div>
+      <div style="display:flex;gap:26px;align-items:flex-start;">
+        <div style="font:600 52px/1 'JetBrains Mono',monospace;color:#e2dad0;flex:0 0 auto;">3</div>
+        <div><h3 style="margin:0 0 10px;font:600 39px/1.16 'Source Serif 4',Georgia,serif;color:#28697a;">Seeds are important to track, especially in quantum reservoir computing</h3></div>
+      </div>
+      <div style="display:flex;gap:26px;align-items:flex-start;">
+        <div style="font:600 52px/1 'JetBrains Mono',monospace;color:#e2dad0;flex:0 0 auto;">6</div>
+        <div><h3 style="margin:0 0 10px;font:600 39px/1.16 'Source Serif 4',Georgia,serif;color:#28697a;">Compared to classical hardware, quantum hardware drifts</h3></div>
+      </div>
+    </div>
+    
+  </section>
+
+</x-import>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;followUrl&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;valteruo.github.io/qrc-tracking&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Hands-on links&quot;},
+  &quot;mlflowUrl&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;http://127.0.0.1:5000&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Hands-on links&quot;},
+  &quot;repoUrl&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;github.com/valterUo/qrc-tracking-tutorial&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Hands-on links&quot;}
+}">
+class Component extends DCLogic {
+  state = { flipped: {} };
+  toggleFlip(i, e) {
+    // Presenting/fullscreen hosts advance slides on a stage click; keep the
+    // tap on the card so flipping never navigates.
+    if (e) { e.preventDefault(); e.stopPropagation(); if (e.nativeEvent) e.nativeEvent.stopImmediatePropagation(); }
+    this.setState(s => ({ flipped: { ...s.flipped, [i]: !s.flipped[i] } }));
+  }
+  renderVals() {
+    const flip = {};
+    for (let i = 1; i <= 6; i++) {
+      flip['f' + i] = (e) => this.toggleFlip(i, e);
+      flip['r' + i] = this.state.flipped[i] ? 180 : 0;
+    }
+    return {
+      ...flip,
+      followUrl: this.props.followUrl ?? 'valteruo.github.io/qrc-tracking',
+      mlflowUrl: this.props.mlflowUrl ?? 'http://127.0.0.1:5000',
+      repoUrl: this.props.repoUrl ?? 'github.com/valterUo/qrc-tracking-tutorial'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

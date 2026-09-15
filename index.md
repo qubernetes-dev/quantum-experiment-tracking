@@ -74,7 +74,7 @@ Session 1 presented by Vlad Stirbu and Otso Kinanen.
 
 ### Session 2 — Applied Practice (90 minutes)
 
-**Part 4: QML Case: Quantum Reservoir Computing (~35 min)**
+**Part 4: QML Case: Quantum Reservoir Computing (~35 min)** [slides](/slides/QuantumReservoirComputingTutorial/Part%204%20QRC%20Experiment%20Tracking.dc.html)
 
 - Introduction and motivation on quantum reservoir computing, the selected QML paradigm
 - Selecting the learning task and constructing data

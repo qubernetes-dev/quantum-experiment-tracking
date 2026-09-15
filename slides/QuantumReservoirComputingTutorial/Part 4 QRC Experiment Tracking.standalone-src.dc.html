@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<meta name="ext-resource-dependency" content="./deck-stage.js" data-resource-id="./deck-stage.js" />
+<meta name="ext-resource-dependency" content="tex.js" data-resource-id="tex.js" />
+<meta name="ext-resource-dependency" content="qrc-engine.js" data-resource-id="qrc-engine.js" />
+<meta name="ext-resource-dependency" content="tracking.js" data-resource-id="tracking.js" />
+<meta name="ext-resource-dependency" content="pipeline.js" data-resource-id="pipeline.js" />
+<meta name="ext-resource-dependency" content="widgets.js" data-resource-id="widgets.js" />
+<meta name="ext-resource-dependency" content="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap" data-resource-id="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap" />
+<template id="__bundler_thumbnail" data-bg-color="#f6f2ec">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#f6f2ec"/>
+    <g stroke="#6b6359" stroke-width="9" opacity=".5">
+      <line x1="330" y1="330" x2="870" y2="330"/>
+      <line x1="330" y1="400" x2="870" y2="400"/>
+      <line x1="330" y1="470" x2="870" y2="470"/>
+    </g>
+    <rect x="450" y="290" width="140" height="220" rx="26" fill="#d9e6ea" stroke="#28697a" stroke-width="10"/>
+    <text x="520" y="440" font-family="monospace" font-size="130" font-weight="600" fill="#28697a" text-anchor="middle">U</text>
+    <rect x="640" y="290" width="110" height="220" rx="26" fill="#f6e6d8" stroke="#8c5731" stroke-width="10" stroke-dasharray="22 16"/>
+    <text x="695" y="438" font-family="monospace" font-size="120" font-weight="600" fill="#8c5731" text-anchor="middle">γ</text>
+  </svg>
+</template>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #f6f2ec; }
+    a { color: #28697a; text-decoration: none; border-bottom: 1px solid rgba(40,105,122,.35); }
+    a:hover { color: #1b5060; border-bottom-color: #1b5060; }
+    ::-webkit-scrollbar { width: 9px; height: 9px; }
+    ::-webkit-scrollbar-thumb { background: #d7cdc1; border-radius: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+  </style>
+  <script>
+    /* standalone export: no outline rail — this is a presentation file, not an editor */
+    (function () {
+      var apply = function () {
+        var list = document.querySelectorAll('deck-stage');
+        for (var i = 0; i < list.length; i++) {
+          var d = list[i];
+          if (!d.hasAttribute('no-rail')) d.setAttribute('no-rail', '');
+          var sr = d.shadowRoot;
+          if (sr && !d.__chromeOff) {
+            var st = document.createElement('style');
+            st.textContent = '.overlay, .rail, .rail-resize { display: none !important; }';
+            sr.appendChild(st);
+            d.__chromeOff = true;
+          }
+        }
+      };
+      apply();
+      new MutationObserver(apply).observe(document.documentElement, { subtree: true, childList: true });
+      document.addEventListener('DOMContentLoaded', apply);
+    })();
+  </script>
+  <script src="tex.js"></script>
+  <script src="qrc-engine.js"></script>
+  <script src="tracking.js"></script>
+  <script src="pipeline.js"></script>
+  <script src="widgets.js"></script>
+</helmet>
+
+<x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="1920" height="1080" hint-size="100%,100%" data-uneditable="">
+
+  <section data-label="Title" data-screen-label="01" data-speaker-notes="Wikipedia definition: Reservoir computing is a framework for computation derived from recurrent neural network theory that maps input signals into higher dimensional computational spaces through the dynamics of a fixed, non-linear system called a reservoir." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:96px 110px;display:flex;flex-direction:column;justify-content:space-between;" data-om-slide-id="1a5523a3">
+    <div style="font:600 25px/1.2 'JetBrains Mono',monospace;letter-spacing:.17em;text-transform:uppercase;color:#28697a;">Session 2 · Part 4 · 35 minutes</div>
+    <div style="display: flex; flex-direction: column; gap: 32px; width: 1717px; height: 541px">
+      <h1 style="margin: 0; font: 600 118px/0.98 'Source Serif 4',Georgia,serif; letter-spacing: -0.012em; max-width: 1500px; text-wrap: balance; height: 364px; width: 1600px; color: #000000">Experiment tracking case study in QML:</h1>
+      <h1 style="margin: 0; font: 600 118px/0.98 'Source Serif 4',Georgia,serif; letter-spacing: -0.012em; max-width: 1500px; text-wrap: balance; height: 364px; width: 1600px; color: #28697A">Quantum reservoir computing</h1><p style="margin: 0; font: 400 30px/1.5 'IBM Plex Sans',system-ui,sans-serif; color: #6b6359; max-width: 1080px; text-wrap: pretty; width: 1133px; height: 90px">Study on forecasting&nbsp;chaotic Mackey-Glass time series data with quantum reservoir computing</p>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid #e2dad0;padding-top:28px;">
+      <div style="font:400 26px/1.5 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;">Valter Uotila · Aalto University &amp; University of Helsinki<br>currently at TU Delft<br><br><span style="color: rgb(107, 99, 89); font-size: 24px;">QCE tutorial: From Circuits to Results</span></div>
+      
+    </div>
+  </section>
+
+  <section data-label="What this part delivers" data-screen-label="02" data-speaker-notes="TODO: Implement a nice hover over reference feature: Put some reference marker to a correct point, when you hover over it, the reference appears in a box next to it and then it should also contain a link that you can click.
+
+Three promises. Emphasise the third: the failure is real, not a slideware animation — the cache bug is one your own protocol notes call out.
+
+Why reservoir computing works, what the echo state property buys you, and what genuinely changes when the reservoir is a driven open quantum system rather than 60 tanh units.
+
+Mackey-Glass → angle encoding → dissipative reservoir → ridge readout, against a classical ESN and two naive baselines. Real code beside every stage, real numbers underneath.
+
+The pipeline will lose to the classical baseline. The plot, the config and the code all look correct. We recover the cause from the run log in about ninety seconds, fix it, and rerun." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:64px 72px;display:flex;flex-direction:column;gap:36px;" data-om-slide-id="240d040b">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:18px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 02</div>
+        <h2 style="margin:12px 0 0;font:600 52px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">What to expect from this part and lessons to learn</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;min-height:0;">
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:34px;display:flex;flex-direction:column;gap:18px;">
+        <div style="font:600 64px/1 'JetBrains Mono',monospace;color:#e2dad0;">01</div>
+        <h3 style="margin:0;font:600 33px/1.2 'Source Serif 4',Georgia,serif;color:#28697a;">Brief background on quantum reservoir computing paradigm</h3>
+        <svg viewBox="0 0 440 420" style="width:100%;height:auto;max-height:100%;flex:1;min-height:0;" role="img" aria-hidden="true"><rect x="0" y="0" width="440" height="92" rx="9" fill="#f0eae0"></rect><text x="18" y="34" font-family="'JetBrains Mono',monospace" font-size="23" font-weight="500" fill="#2f2b27">input</text><polyline points="150.0,41.9 152.5,39.6 155.0,37.7 157.5,36.1 160.0,35.0 162.5,34.2 164.9,33.7 167.4,33.7 169.9,34.0 172.4,34.6 174.9,35.4 177.4,36.4 179.9,37.6 182.4,38.9 184.9,40.3 187.4,41.6 189.9,42.9 192.3,44.1 194.8,45.2 197.3,46.1 199.8,46.8 202.3,47.4 204.8,47.8 207.3,48.0 209.8,48.1 212.3,48.1 214.8,48.0 217.3,47.9 219.7,47.8 222.2,47.7 224.7,47.7 227.2,47.9 229.7,48.2 232.2,48.7 234.7,49.4 237.2,50.3 239.7,51.4 242.2,52.7 244.7,54.2 247.1,55.9 249.6,57.6 252.1,59.4 254.6,61.2 257.1,63.0 259.6,64.6 262.1,66.1 264.6,67.4 267.1,68.3 269.6,69.0 272.1,69.3 274.5,69.1 277.0,68.6 279.5,67.6 282.0,66.2 284.5,64.4 287.0,62.2 289.5,59.7 292.0,56.9 294.5,53.9 297.0,50.7 299.5,47.4 301.9,44.2 304.4,41.0" fill="none" stroke="#6b6359" stroke-width="2.6" stroke-linecap="round"></polyline><polyline points="304.4,41.0 306.9,38.0 309.4,35.2 311.9,32.7 314.4,30.6 316.9,28.8 319.4,27.6 321.9,26.8 324.4,26.5 326.9,26.7 329.3,27.4 331.8,28.5 334.3,30.0 336.8,31.9 339.3,34.1 341.8,36.6 344.3,39.2 346.8,42.0 349.3,44.7 351.8,47.5 354.3,50.1 356.7,52.6 359.2,54.8 361.7,56.8 364.2,58.5 366.7,59.8 369.2,60.9 371.7,61.6 374.2,62.0 376.7,62.1 379.2,62.0 381.7,61.6 384.1,61.1 386.6,60.4 389.1,59.6 391.6,58.8 394.1,58.0 396.6,57.3 399.1,56.6 401.6,56.1 404.1,55.7 406.6,55.4 409.1,55.3 411.5,55.3 414.0,55.5 416.5,55.7 419.0,56.1 421.5,56.4 424.0,56.8" fill="none" stroke="#8c5731" stroke-width="2.6" stroke-dasharray="7 5" stroke-linecap="round"></polyline><line x1="220" y1="100" x2="220" y2="121" stroke="#e2dad0" stroke-width="2.5"></line><polygon points="214,120 226,120 220,128" fill="#e2dad0"></polygon><rect x="0" y="130" width="440" height="152" rx="9" fill="rgba(40,105,122,.06)" stroke="#28697a" stroke-width="1.5"></rect><text x="18" y="164" font-family="'JetBrains Mono',monospace" font-size="23" font-weight="500" fill="#2f2b27">reservoir</text><g transform="translate(2,0)"><line x1="196" y1="152" x2="372" y2="152" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="196" y1="188" x2="372" y2="188" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="196" y1="224" x2="372" y2="224" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="196" y1="260" x2="372" y2="260" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><text x="150" y="161" font-family="'JetBrains Mono',monospace" font-size="25" font-weight="500" fill="#6b6359">|0⟩</text><text x="150" y="197" font-family="'JetBrains Mono',monospace" font-size="25" font-weight="500" fill="#6b6359">|0⟩</text><text x="150" y="233" font-family="'JetBrains Mono',monospace" font-size="25" font-weight="500" fill="#6b6359">|0⟩</text><text x="150" y="269" font-family="'JetBrains Mono',monospace" font-size="25" font-weight="500" fill="#6b6359">|0⟩</text><rect x="204" y="137" width="96" height="138" rx="8" fill="#d9e6ea" stroke="#28697a" stroke-width="2"></rect><text x="252" y="216" font-family="'JetBrains Mono',monospace" font-size="30" font-weight="600" fill="#28697a" text-anchor="middle">U</text><rect x="318" y="137" width="38" height="138" rx="8" fill="#f6e6d8" stroke="#8c5731" stroke-width="2" stroke-dasharray="5 3.5"></rect><text x="337" y="215" font-family="'JetBrains Mono',monospace" font-size="25" font-weight="600" fill="#8c5731" text-anchor="middle">γ</text><rect x="372" y="137" width="32" height="30" rx="5" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><path d="M 379 161 A 9 9 0 0 1 397 161" fill="none" stroke="#28697a" stroke-width="1.9"></path><line x1="388" y1="161" x2="395" y2="153" stroke="#28697a" stroke-width="1.9" stroke-linecap="round"></line><rect x="372" y="173" width="32" height="30" rx="5" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><path d="M 379 197 A 9 9 0 0 1 397 197" fill="none" stroke="#28697a" stroke-width="1.9"></path><line x1="388" y1="197" x2="395" y2="189" stroke="#28697a" stroke-width="1.9" stroke-linecap="round"></line><rect x="372" y="209" width="32" height="30" rx="5" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><path d="M 379 233 A 9 9 0 0 1 397 233" fill="none" stroke="#28697a" stroke-width="1.9"></path><line x1="388" y1="233" x2="395" y2="225" stroke="#28697a" stroke-width="1.9" stroke-linecap="round"></line><rect x="372" y="245" width="32" height="30" rx="5" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><path d="M 379 269 A 9 9 0 0 1 397 269" fill="none" stroke="#28697a" stroke-width="1.9"></path><line x1="388" y1="269" x2="395" y2="261" stroke="#28697a" stroke-width="1.9" stroke-linecap="round"></line></g><line x1="220" y1="290" x2="220" y2="311" stroke="#e2dad0" stroke-width="2.5"></line><polygon points="214,310 226,310 220,318" fill="#e2dad0"></polygon><rect x="0" y="320" width="440" height="100" rx="9" fill="#f0eae0"></rect><text x="18" y="354" font-family="'JetBrains Mono',monospace" font-size="23" font-weight="500" fill="#2f2b27">readout</text><line x1="216" y1="342" x2="288" y2="375" stroke="#6b6359" stroke-width="1.3" opacity=".7"></line><line x1="216" y1="364" x2="288" y2="375" stroke="#6b6359" stroke-width="1.3" opacity=".7"></line><line x1="216" y1="386" x2="288" y2="375" stroke="#6b6359" stroke-width="1.3" opacity=".7"></line><line x1="216" y1="408" x2="288" y2="375" stroke="#6b6359" stroke-width="1.3" opacity=".7"></line><circle cx="212" cy="342" r="6" fill="#6b6359"></circle><circle cx="212" cy="364" r="6" fill="#6b6359"></circle><circle cx="212" cy="386" r="6" fill="#6b6359"></circle><circle cx="212" cy="408" r="6" fill="#6b6359"></circle><circle cx="292" cy="375" r="9" fill="#28697a"></circle><polyline points="322.0,376.5 324.3,373.7 326.6,370.8 329.0,368.0 331.3,365.4 333.6,362.9 335.9,360.7 338.2,358.9 340.5,357.4 342.9,356.3 345.2,355.6 347.5,355.4 349.8,355.6 352.1,356.3 354.5,357.4 356.8,358.8 359.1,360.5 361.4,362.5 363.7,364.7 366.0,367.1 368.4,369.5 370.7,371.9 373.0,374.2 375.3,376.4 377.6,378.4 380.0,380.2 382.3,381.7 384.6,383.0 386.9,383.9 389.2,384.6 391.5,385.0 393.9,385.1 396.2,385.0 398.5,384.7 400.8,384.2 403.1,383.6 405.5,382.9 407.8,382.2 410.1,381.5 412.4,380.9 414.7,380.3 417.0,379.9 419.4,379.6 421.7,379.4 424.0,379.4" fill="none" stroke="#28697a" stroke-width="2.6" stroke-linecap="round"></polyline></svg>
+      </div>
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:34px;display:flex;flex-direction:column;gap:18px;">
+        <div style="font:600 64px/1 'JetBrains Mono',monospace;color:#e2dad0;">02</div>
+        <h3 style="margin:0;font:600 33px/1.2 'Source Serif 4',Georgia,serif;color:#28697a;">The interactive use case pipeline</h3>
+        <svg viewBox="0 0 440 420" style="width:100%;height:auto;max-height:100%;flex:1;min-height:0;" role="img" aria-hidden="true"><rect x="0" y="0" width="106" height="66" rx="9" fill="#f0eae0"></rect><polyline points="12.0,27.2 13.8,25.0 15.6,23.3 17.3,22.1 19.1,21.5 20.9,21.5 22.7,21.9 24.5,22.7 26.3,23.8 28.0,25.1 29.8,26.5 31.6,27.8 33.4,29.0 35.2,30.0 37.0,30.8 38.7,31.3 40.5,31.6 42.3,31.7 44.1,31.6 45.9,31.5 47.7,31.4 49.4,31.4 51.2,31.6 53.0,32.1 54.8,32.8 56.6,33.9 58.3,35.2 60.1,36.8 61.9,38.6 63.7,40.4 65.5,42.2 67.3,43.9 69.0,45.2 70.8,46.2 72.6,46.6 74.4,46.5 76.2,45.8 78.0,44.4 79.7,42.4 81.5,40.0 83.3,37.1 85.1,33.9 86.9,30.6 88.7,27.3 90.4,24.2 92.2,21.5 94.0,19.2" fill="none" stroke="#28697a" stroke-width="2.4" stroke-linecap="round"></polyline><text x="126" y="42" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="25" font-weight="500" fill="#2f2b27">Mackey-Glass</text><rect x="0" y="84" width="106" height="66" rx="9" fill="#f0eae0"></rect><line x1="53" y1="117" x2="80" y2="117" stroke="#e2dad0" stroke-width="2"></line><line x1="53" y1="117" x2="69.8" y2="95.9" stroke="#28697a" stroke-width="2.6"></line><path d="M 68 117 A 15 15 0 0 0 62.3 105.3" fill="none" stroke="#28697a" stroke-width="2"></path><circle cx="53" cy="117" r="3.5" fill="#6b6359"></circle><text x="126" y="126" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="25" font-weight="500" fill="#2f2b27">angle encoding</text><rect x="0" y="168" width="106" height="66" rx="9" fill="#f0eae0"></rect><line x1="5" y1="183" x2="101" y2="183" stroke="#6b6359" stroke-width="1.6" opacity=".55"></line><line x1="5" y1="199" x2="101" y2="199" stroke="#6b6359" stroke-width="1.6" opacity=".55"></line><line x1="5" y1="215" x2="101" y2="215" stroke="#6b6359" stroke-width="1.6" opacity=".55"></line><rect x="20" y="176" width="30" height="46" rx="6" fill="#d9e6ea" stroke="#28697a" stroke-width="1.8"></rect><text x="35" y="210" font-family="'JetBrains Mono',monospace" font-size="30" font-weight="600" fill="#28697a" text-anchor="middle">U</text><rect x="60" y="176" width="22" height="46" rx="6" fill="#f6e6d8" stroke="#8c5731" stroke-width="1.8" stroke-dasharray="4 3"></rect><text x="71" y="209" font-family="'JetBrains Mono',monospace" font-size="25" font-weight="600" fill="#8c5731" text-anchor="middle">γ</text><line x1="71" y1="222" x2="71" y2="228" stroke="#8c5731" stroke-width="1.6" stroke-dasharray="3 2"></line><line x1="63" y1="228" x2="79" y2="228" stroke="#8c5731" stroke-width="2"></line><line x1="66" y1="231" x2="76" y2="231" stroke="#8c5731" stroke-width="2"></line><line x1="69" y1="234" x2="73" y2="234" stroke="#8c5731" stroke-width="2"></line><text x="126" y="210" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="25" font-weight="500" fill="#2f2b27">dissipative reservoir</text><rect x="0" y="252" width="106" height="66" rx="9" fill="#f0eae0"></rect><line x1="26" y1="266" x2="80" y2="285" stroke="#6b6359" stroke-width="1.2" opacity=".7"></line><circle cx="22" cy="266" r="4.5" fill="#6b6359"></circle><line x1="26" y1="279" x2="80" y2="285" stroke="#6b6359" stroke-width="1.2" opacity=".7"></line><circle cx="22" cy="279" r="4.5" fill="#6b6359"></circle><line x1="26" y1="292" x2="80" y2="285" stroke="#6b6359" stroke-width="1.2" opacity=".7"></line><circle cx="22" cy="292" r="4.5" fill="#6b6359"></circle><line x1="26" y1="305" x2="80" y2="285" stroke="#6b6359" stroke-width="1.2" opacity=".7"></line><circle cx="22" cy="305" r="4.5" fill="#6b6359"></circle><circle cx="84" cy="285" r="7" fill="#28697a"></circle><text x="126" y="294" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="25" font-weight="500" fill="#2f2b27">ridge readout</text><line x1="0" y1="342" x2="440" y2="342" stroke="#e2dad0" stroke-width="1.5"></line><polyline points="6.0,370.6 10.8,371.5 15.5,372.5 20.3,373.4 25.0,374.3 29.8,375.1 34.5,375.8 39.3,376.5 44.0,377.1 48.8,377.5 53.6,377.9 58.3,378.1 63.1,378.3 67.8,378.4 72.6,378.4 77.3,378.4 82.1,378.3 86.8,378.2 91.6,378.2 96.4,378.1 101.1,378.1 105.9,378.2 110.6,378.3 115.4,378.5 120.1,378.9 124.9,379.3 129.6,379.9 134.4,380.6 139.2,381.4 143.9,382.3 148.7,383.4 153.4,384.5 158.2,385.7 162.9,386.9 167.7,388.2 172.4,389.4 177.2,390.7 182.0,391.8 186.7,392.9 191.5,393.9 196.2,394.7 201.0,395.3 205.7,395.8 210.5,396.0 215.2,396.0 220.0,395.8 224.8,395.3 229.5,394.6 234.3,393.6 239.0,392.4 243.8,391.0 248.5,389.3 253.3,387.5 258.0,385.5 262.8,383.4 267.6,381.2 272.3,378.9 277.1,376.7 281.8,374.4 286.6,372.2 291.3,370.1 296.1,368.2 300.8,366.3 305.6,364.7 310.4,363.4 315.1,362.2 319.9,361.4 324.6,360.8 329.4,360.5 334.1,360.4 338.9,360.7 343.6,361.2 348.4,362.0 353.2,363.1 357.9,364.3 362.7,365.8 367.4,367.4 372.2,369.1 376.9,371.0 381.7,372.9 386.4,374.8 391.2,376.7 396.0,378.6 400.7,380.4 405.5,382.1 410.2,383.7 415.0,385.1 419.7,386.4 424.5,387.5 429.2,388.4 434.0,389.1" fill="none" stroke="#6b6359" stroke-width="3" stroke-linecap="round" opacity=".85"></polyline><polyline points="6.0,373.5 10.8,374.4 15.5,375.3 20.3,376.1 25.0,376.9 29.8,377.5 34.5,378.1 39.3,378.6 44.0,379.0 48.8,379.2 53.6,379.4 58.3,379.5 63.1,379.4 67.8,379.4 72.6,379.2 77.3,379.1 82.1,378.9 86.8,378.7 91.6,378.5 96.4,378.4 101.1,378.4 105.9,378.4 110.6,378.5 115.4,378.8 120.1,379.1 124.9,379.5 129.6,380.1 134.4,380.8 139.2,381.6 143.9,382.5 148.7,383.5 153.4,384.5 158.2,385.6 162.9,386.8 167.7,387.9 172.4,389.0 177.2,390.0 182.0,391.0 186.7,391.9 191.5,392.6 196.2,393.2 201.0,393.6 205.7,393.8 210.5,393.9 215.2,393.7 220.0,393.3 224.8,392.6 229.5,391.8 234.3,390.7 239.0,389.4 243.8,388.0 248.5,386.4 253.3,384.7 258.0,382.8 262.8,380.9 267.6,378.9 272.3,376.9 277.1,375.0 281.8,373.1 286.6,371.3 291.3,369.6 296.1,368.0 300.8,366.7 305.6,365.5 310.4,364.6 315.1,363.9 319.9,363.4 324.6,363.2 329.4,363.2 334.1,363.5 338.9,364.0 343.6,364.8 348.4,365.7 353.2,366.8 357.9,368.1 362.7,369.5 367.4,371.1 372.2,372.7 376.9,374.3 381.7,376.0 386.4,377.6 391.2,379.2 396.0,380.7 400.7,382.1 405.5,383.4 410.2,384.5 415.0,385.5 419.7,386.4 424.5,387.1 429.2,387.6 434.0,387.9" fill="none" stroke="#28697a" stroke-width="2.4" stroke-linecap="round"></polyline><polyline points="6.0,381.9 10.8,382.4 15.5,382.7 20.3,382.9 25.0,382.9 29.8,382.9 34.5,382.8 39.3,382.6 44.0,382.3 48.8,381.9 53.6,381.5 58.3,381.0 63.1,380.6 67.8,380.1 72.6,379.6 77.3,379.2 82.1,378.8 86.8,378.5 91.6,378.2 96.4,378.0 101.1,378.0 105.9,378.0 110.6,378.1 115.4,378.3 120.1,378.6 124.9,379.1 129.6,379.5 134.4,380.1 139.2,380.7 143.9,381.4 148.7,382.1 153.4,382.8 158.2,383.5 162.9,384.2 167.7,384.9 172.4,385.4 177.2,385.9 182.0,386.3 186.7,386.7 191.5,386.9 196.2,386.9 201.0,386.9 205.7,386.7 210.5,386.4 215.2,386.0 220.0,385.4 224.8,384.8 229.5,384.0 234.3,383.2 239.0,382.2 243.8,381.3 248.5,380.3 253.3,379.3 258.0,378.3 262.8,377.3 267.6,376.4 272.3,375.5 277.1,374.7 281.8,374.0 286.6,373.5 291.3,373.0 296.1,372.6 300.8,372.4 305.6,372.3 310.4,372.3 315.1,372.5 319.9,372.7 324.6,373.1 329.4,373.6 334.1,374.1 338.9,374.8 343.6,375.4 348.4,376.1 353.2,376.9 357.9,377.6 362.7,378.3 367.4,379.0 372.2,379.6 376.9,380.2 381.7,380.7 386.4,381.2 391.2,381.6 396.0,381.8 400.7,382.0 405.5,382.1 410.2,382.2 415.0,382.1 419.7,382.0 424.5,381.9 429.2,381.7 434.0,381.5" fill="none" stroke="#71578b" stroke-width="2.4" stroke-dasharray="7 5" stroke-linecap="round"></polyline><line x1="6" y1="413" x2="30" y2="413" stroke="#6b6359" stroke-width="3" stroke-linecap="round"></line><text x="38" y="419" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="22" font-weight="500" fill="#6b6359">actual</text><line x1="128.4" y1="413" x2="152.4" y2="413" stroke="#28697a" stroke-width="3" stroke-linecap="round"></line><text x="160.4" y="419" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="22" font-weight="500" fill="#6b6359">quantum</text><line x1="262.20000000000005" y1="413" x2="286.20000000000005" y2="413" stroke="#71578b" stroke-width="3" stroke-dasharray="7 5" stroke-linecap="round"></line><text x="294.20000000000005" y="419" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="22" font-weight="500" fill="#6b6359">classical</text></svg>
+      </div>
+      <div style="background:#ffffff;border:1px solid #8c5731;border-radius:12px;padding:34px;display:flex;flex-direction:column;gap:18px;">
+        <div style="font:600 64px/1 'JetBrains Mono',monospace;color:#ecdcc6;">03</div>
+        <h3 style="margin:0;font:600 33px/1.2 'Source Serif 4',Georgia,serif;color:#8c5731;">Experiment track a hiding failure and fix it</h3>
+        <svg viewBox="0 0 440 420" style="width:100%;height:auto;max-height:100%;flex:1;min-height:0;" role="img" aria-hidden="true"><path d="M 267.3 72.8 A 132 132 0 0 1 343.2 148.7" fill="none" stroke="#e2dad0" stroke-width="3"></path><polygon points="347.2,159.0 336.7,151.2 349.8,146.2" fill="#e2dad0"></polygon><path d="M 343.2 243.3 A 132 132 0 0 1 267.3 319.2" fill="none" stroke="#e2dad0" stroke-width="3"></path><polygon points="257.0,323.2 264.8,312.7 269.8,325.8" fill="#e2dad0"></polygon><path d="M 172.7 319.2 A 132 132 0 0 1 96.8 243.3" fill="none" stroke="#e2dad0" stroke-width="3"></path><polygon points="92.8,233.0 103.3,240.8 90.2,245.8" fill="#e2dad0"></polygon><path d="M 96.8 148.7 A 132 132 0 0 1 172.7 72.8" fill="none" stroke="#e2dad0" stroke-width="3"></path><polygon points="183.0,68.8 175.2,79.3 170.2,66.2" fill="#e2dad0"></polygon><circle cx="220.0" cy="64.0" r="27" fill="#ffffff" stroke="#28697a" stroke-width="2.2"></circle><polygon points="214,56 214,72 228,64" fill="#28697a"></polygon><text x="220" y="18" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="24" font-weight="600" fill="#2f2b27" text-anchor="middle">run</text><circle cx="352.0" cy="196.0" r="27" fill="#ffffff" stroke="#28697a" stroke-width="2.2"></circle><line x1="344" y1="189" x2="360" y2="189" stroke="#28697a" stroke-width="2.4" stroke-linecap="round"></line><line x1="344" y1="196" x2="356" y2="196" stroke="#28697a" stroke-width="2.4" stroke-linecap="round"></line><line x1="344" y1="203" x2="360" y2="203" stroke="#28697a" stroke-width="2.4" stroke-linecap="round"></line><text x="396" y="204" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="24" font-weight="600" fill="#2f2b27" text-anchor="start">log</text><circle cx="220.0" cy="328.0" r="27" fill="#ffffff" stroke="#8c5731" stroke-width="2.2"></circle><circle cx="214" cy="329" r="4.5" fill="#8c5731"></circle><circle cx="226" cy="322" r="4.5" fill="#8c5731"></circle><text x="220" y="384" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="24" font-weight="600" fill="#8c5731" text-anchor="middle">spot</text><circle cx="88.0" cy="196.0" r="27" fill="#ffffff" stroke="#28697a" stroke-width="2.2"></circle><polyline points="80,197.00000000000003 86,203.00000000000003 96,189.00000000000003" fill="none" stroke="#28697a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"></polyline><text x="44" y="204.00000000000003" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="24" font-weight="600" fill="#2f2b27" text-anchor="end">fix</text><text x="220" y="192" font-family="'JetBrains Mono',monospace" font-size="27" font-weight="600" fill="#8c5731" text-anchor="middle">R² 0.70</text><text x="220" y="228" font-family="'JetBrains Mono',monospace" font-size="27" font-weight="600" fill="#28697a" text-anchor="middle">→ 0.98</text></svg>
+      </div>
+    </div>
+  </section>
+
+  <section data-label="Reservoir computing" data-screen-label="03" data-speaker-notes="TODO: Add proper definitions of x and y, define the weight matrices properly, move math to the next slide. Look at classical reservoir computing package. Add motivation about effective computational cost.
+
+The core bargain: a fixed random nonlinear dynamical system does the temporal work, and you only ever solve a linear least-squares problem. That is why it is cheap and why it suits NISQ hardware — nothing inside the reservoir is trained, so nothing inside needs gradients.
+Why it suits time series: The state at time t is a nonlinear summary of the whole input history. No feature windows, no lag engineering — the recurrence already carries the past.
+Why it suits quantum hardware thing inside the reservoir is optimised, so there is no variational loop, no parameter-shift gradients, no barren plateau. One pass of the data through fixed dynamics, then classical least squares.
+Why it is a tracking problem. A trained network stores its knowledge in weights you can save. A reservoir stores its knowledge in configuration. The artifact that matters is metadata.
+Ridge regression. Closed form. No backpropagation through time, no vanishing gradients, no unrolling." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:64px 72px;display:flex;flex-direction:column;gap:32px;" data-om-slide-id="1dad96df">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:18px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;"></div>
+        <h2 style="margin:12px 0 0;font:600 52px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Reservoir computing -- high level idea and motivation</h2>
+      </div>
+      
+    </div><div style="flex:1;display:flex;flex-direction:column;gap:26px;min-height:0;">
+      <div style="flex:1.42;display:grid;grid-template-columns:1fr 46px 1.14fr 46px 1fr;grid-template-rows:minmax(0,1fr);gap:20px;min-height:0;align-items:stretch;">
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:26px 28px;display:flex;flex-direction:column;gap:14px;min-width:0;min-height:0;overflow:hidden;">
+        <div style="font:600 24px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#6f675e;">input signal</div><svg viewBox="0 0 460 460" style="width:100%;height:auto;max-height:100%;flex:1;min-height:0;" role="img" aria-hidden="true"><polyline points="44.0,73.5 47.2,73.6 50.3,74.2 53.5,75.2 56.7,76.6 59.8,78.5 63.0,80.6 66.2,83.1 69.3,85.7 72.5,88.6 75.7,91.6 78.8,94.7 82.0,97.8 85.2,100.8 88.3,103.9 91.5,106.8 94.7,109.6 97.8,112.2 101.0,114.5 104.2,116.7 107.3,118.6 110.5,120.3 113.7,121.7 116.8,122.9 120.0,123.8 123.2,124.5 126.3,124.9 129.5,125.2 132.7,125.2 135.8,125.2 139.0,125.0 142.2,124.8 145.3,124.5 148.5,124.2 151.7,124.0 154.8,123.8 158.0,123.8 161.2,124.0 164.3,124.3 167.5,124.9 170.7,125.7 173.8,126.8 177.0,128.2 180.2,129.8 183.3,131.8 186.5,134.2 189.7,136.8 192.8,139.7 196.0,142.9 199.2,146.3 202.3,150.0 205.5,153.8 208.7,157.8 211.8,162.0 215.0,166.1 218.2,170.3 221.3,174.4 224.5,178.5 227.7,182.3 230.8,186.0 234.0,189.3 237.2,192.4 240.3,195.0 243.5,197.3 246.7,199.0 249.8,200.3 253.0,200.9 256.2,201.0 259.3,200.5 262.5,199.4 265.7,197.6 268.8,195.2 272.0,192.2 275.2,188.6 278.3,184.4 281.5,179.6 284.7,174.2 287.8,168.4 291.0,162.2 294.2,155.6 297.3,148.7 300.5,141.5 303.7,134.1 306.8,126.6 310.0,119.1 313.2,111.6 316.3,104.3 319.5,97.1 322.7,90.2 325.8,83.6 329.0,77.4 332.2,71.6 335.3,66.4 338.5,61.7 341.7,57.7 344.8,54.3 348.0,51.6 351.2,49.6 354.3,48.3 357.5,47.8 360.7,47.9 363.8,48.8 367.0,50.4 370.2,52.7 373.3,55.6 376.5,59.1 379.7,63.2 382.8,67.8 386.0,72.8 389.2,78.2 392.3,84.0 395.5,90.0 398.7,96.1 401.8,102.5 405.0,108.8 408.2,115.2 411.3,121.5 414.5,127.6 417.7,133.6 420.8,139.2 424.0,144.6" fill="none" stroke="#6b6359" stroke-width="3.2" stroke-linecap="round"></polyline><line x1="44.0" y1="85.5" x2="44.0" y2="273.3" stroke="#e2dad0" stroke-width="2" stroke-dasharray="4 4"></line><circle cx="44.0" cy="73.5" r="9.5" fill="#ffffff" stroke="#28697a" stroke-width="2.6"></circle><line x1="120.0" y1="135.8" x2="120.0" y2="304.9" stroke="#e2dad0" stroke-width="2" stroke-dasharray="4 4"></line><circle cx="120.0" cy="123.8" r="9.5" fill="#ffffff" stroke="#28697a" stroke-width="2.6"></circle><line x1="196.0" y1="154.9" x2="196.0" y2="330.0" stroke="#e2dad0" stroke-width="2" stroke-dasharray="4 4"></line><circle cx="196.0" cy="142.9" r="9.5" fill="#ffffff" stroke="#28697a" stroke-width="2.6"></circle><line x1="272.0" y1="204.2" x2="272.0" y2="330.0" stroke="#e2dad0" stroke-width="2" stroke-dasharray="4 4"></line><circle cx="272.0" cy="192.2" r="9.5" fill="#ffffff" stroke="#28697a" stroke-width="2.6"></circle><line x1="348.0" y1="63.6" x2="348.0" y2="259.5" stroke="#e2dad0" stroke-width="2" stroke-dasharray="4 4"></line><circle cx="348.0" cy="51.6" r="9.5" fill="#28697a" stroke="#28697a" stroke-width="2.6"></circle><line x1="424.0" y1="156.6" x2="424.0" y2="330.0" stroke="#e2dad0" stroke-width="2" stroke-dasharray="4 4"></line><circle cx="424.0" cy="144.6" r="9.5" fill="#ffffff" stroke="#28697a" stroke-width="2.6"></circle><line x1="28" y1="330" x2="440" y2="330" stroke="#e2dad0" stroke-width="2"></line><rect x="23.0" y="273.3" width="42" height="56.7" rx="4" fill="rgba(107,99,89,.22)"></rect><rect x="99.0" y="304.9" width="42" height="25.1" rx="4" fill="rgba(107,99,89,.22)"></rect><rect x="175.0" y="330.0" width="42" height="26.8" rx="4" fill="rgba(107,99,89,.22)"></rect><rect x="251.0" y="330.0" width="42" height="57.8" rx="4" fill="rgba(107,99,89,.22)"></rect><rect x="327.0" y="259.5" width="42" height="70.5" rx="4" fill="rgba(40,105,122,.55)"></rect><rect x="403.0" y="330.0" width="42" height="27.9" rx="4" fill="rgba(107,99,89,.22)"></rect><line x1="28" y1="392" x2="428" y2="392" stroke="#cdc2b3" stroke-width="2.6"></line><polygon points="440,392 426,385 426,399" fill="#cdc2b3"></polygon><text x="272" y="434" font-family="'JetBrains Mono',monospace" font-size="30" font-weight="500" fill="#6b6359" text-anchor="middle">x<tspan font-size="19" dy="7">t−1</tspan></text><text x="348" y="434" font-family="'JetBrains Mono',monospace" font-size="30" font-weight="600" fill="#28697a" text-anchor="middle">x<tspan font-size="19" dy="7">t</tspan></text></svg>
+        
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center; font: 400 40px 'JetBrains Mono',monospace; color: #cdc2b3; font-size: 40px">→</div>
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:26px 28px;display:flex;flex-direction:column;gap:14px;min-width:0;min-height:0;overflow:hidden;">
+        <div style="font:600 24px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#6f675e;">STATES EVOLVE NON-LINEARLY</div>
+        <tex-math display="" size="27px" color="#2f2b27">x_t = (1-a)\,x_{t-1} + a\,\tanh\!\left(W x_{t-1} + W_{\mathrm{in}} u_t\right)</tex-math>
+        <svg viewBox="0 0 540 300" style="width:100%;height:auto;max-height:100%;flex:1;min-height:0;" role="img" aria-hidden="true"><rect x="0" y="0" width="150" height="228" rx="10" fill="#f0eae0"></rect><line x1="38" y1="62" x2="104" y2="48" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="104" y1="48" x2="122" y2="116" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="122" y1="116" x2="72" y2="108" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="72" y1="108" x2="38" y2="62" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="72" y1="108" x2="34" y2="148" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="34" y1="148" x2="96" y2="180" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="96" y1="180" x2="122" y2="116" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="38" y1="62" x2="34" y2="148" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><circle cx="38" cy="62" r="10" fill="#28697a"></circle><circle cx="104" cy="48" r="10" fill="#28697a"></circle><circle cx="122" cy="116" r="10" fill="#28697a"></circle><circle cx="72" cy="108" r="10" fill="#28697a"></circle><circle cx="34" cy="148" r="10" fill="#28697a"></circle><circle cx="96" cy="180" r="10" fill="#28697a"></circle><text x="75" y="274" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="26" font-weight="500" fill="#6b6359" text-anchor="middle">network</text><rect x="180" y="0" width="150" height="228" rx="10" fill="#f0eae0"></rect><line x1="196" y1="76" x2="272" y2="76" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="196" y1="114" x2="272" y2="114" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><line x1="196" y1="152" x2="272" y2="152" stroke="#6b6359" stroke-width="1.7" opacity=".55"></line><rect x="224" y="62" width="34" height="104" rx="6" fill="#d9e6ea" stroke="#28697a" stroke-width="2"></rect><text x="241" y="120" font-family="'JetBrains Mono',monospace" font-size="30" font-weight="600" fill="#28697a" text-anchor="middle">U</text><rect x="276" y="64" width="26" height="24" rx="4" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><rect x="276" y="102" width="26" height="24" rx="4" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><rect x="276" y="140" width="26" height="24" rx="4" fill="#ffffff" stroke="#28697a" stroke-width="2"></rect><text x="255" y="274" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="26" font-weight="500" fill="#6b6359" text-anchor="middle">circuit</text><rect x="360" y="0" width="150" height="228" rx="10" fill="#f0eae0"></rect><clipPath id="pail"><path d="M 394 62 L 406 186 L 464 186 L 476 62 Z"></path></clipPath><g clip-path="url(#pail)"><rect x="394" y="96" width="82" height="90" fill="rgba(40,105,122,.28)"></rect><polyline points="394.0,92.5 396.1,91.9 398.1,92.0 400.1,92.5 402.2,93.3 404.3,94.3 406.3,95.4 408.4,96.2 410.4,96.8 412.4,97.2 414.5,97.3 416.6,97.2 418.6,97.2 420.6,97.2 422.7,97.4 424.8,98.0 426.8,98.8 428.9,100.0 430.9,101.4 432.9,102.8 435.0,104.0 437.1,104.9 439.1,105.2 441.1,104.9 443.2,104.0 445.3,102.4 447.3,100.3 449.4,97.8 451.4,95.3 453.4,93.0 455.5,91.1 457.6,89.8 459.6,89.2 461.6,89.4 463.7,90.4 465.8,91.9 467.8,93.9 469.9,96.0 471.9,98.1 473.9,99.9 476.0,101.3" fill="none" stroke="#28697a" stroke-width="3"></polyline><polyline points="394.0,125.5 396.1,125.6 398.1,125.6 400.1,125.5 402.2,125.5 404.3,125.7 406.3,125.9 408.4,126.4 410.4,127.0 412.4,127.8 414.5,128.6 416.6,129.3 418.6,129.8 420.6,130.0 422.7,129.9 424.8,129.4 426.8,128.5 428.9,127.4 430.9,126.1 432.9,124.7 435.0,123.3 437.1,122.2 439.1,121.5 441.1,121.1 443.2,121.2 445.3,121.7 447.3,122.5 449.4,123.6 451.4,124.8 453.4,125.9 455.5,126.9 457.6,127.7 459.6,128.3 461.6,128.5 463.7,128.5 465.8,128.3 467.8,128.0 469.9,127.6 471.9,127.3 473.9,127.2 476.0,127.1" fill="none" stroke="#28697a" stroke-width="2" opacity=".5"></polyline></g><path d="M 394 62 L 406 186 L 464 186 L 476 62" fill="none" stroke="#6b6359" stroke-width="2.6" stroke-linejoin="round"></path><line x1="390" y1="62" x2="480" y2="62" stroke="#6b6359" stroke-width="2.6"></line><circle cx="435" cy="34" r="7" fill="#28697a"></circle><line x1="435" y1="44" x2="435" y2="56" stroke="#28697a" stroke-width="2" stroke-dasharray="4 4"></line><text x="435" y="274" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="26" font-weight="500" fill="#6b6359" text-anchor="middle">bucket of water</text></svg>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;font:400 40px 'JetBrains Mono',monospace;color:#cdc2b3;">→</div>
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:26px 28px;display:flex;flex-direction:column;gap:14px;min-width:0;min-height:0;overflow:hidden;">
+        <div style="font:600 24px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#28697a;">readout is the only trained layer</div>
+        <tex-math display="" size="27px" color="#28697a" style="text-transform: none; text-align: left; font-size: 40px">\hat{y}_{t+h} = w^{\top}\left[x_t\,;\,u_t\right] + b</tex-math>
+        <svg viewBox="0 0 460 330" style="width:100%;height:auto;max-height:100%;flex:1;min-height:0;" role="img" aria-hidden="true"><rect x="36" y="31" width="20" height="18" rx="4" fill="rgba(40,105,122,.30)"></rect><circle cx="20" cy="40" r="7" fill="#28697a"></circle><rect x="36" y="75" width="43" height="18" rx="4" fill="rgba(40,105,122,.30)"></rect><circle cx="20" cy="84" r="7" fill="#28697a"></circle><rect x="36" y="119" width="26" height="18" rx="4" fill="rgba(40,105,122,.30)"></rect><circle cx="20" cy="128" r="7" fill="#28697a"></circle><rect x="36" y="163" width="49" height="18" rx="4" fill="rgba(40,105,122,.30)"></rect><circle cx="20" cy="172" r="7" fill="#28697a"></circle><rect x="36" y="207" width="32" height="18" rx="4" fill="rgba(40,105,122,.30)"></rect><circle cx="20" cy="216" r="7" fill="#28697a"></circle><rect x="36" y="251" width="55" height="18" rx="4" fill="rgba(40,105,122,.30)"></rect><circle cx="20" cy="260" r="7" fill="#28697a"></circle><line x1="100" y1="40" x2="222" y2="150" stroke="#28697a" stroke-width="1.2" opacity=".55"></line><line x1="100" y1="84" x2="222" y2="150" stroke="#28697a" stroke-width="2.7" opacity=".55"></line><line x1="100" y1="128" x2="222" y2="150" stroke="#28697a" stroke-width="4.2" opacity=".55"></line><line x1="100" y1="172" x2="222" y2="150" stroke="#28697a" stroke-width="1.2" opacity=".55"></line><line x1="100" y1="216" x2="222" y2="150" stroke="#28697a" stroke-width="2.7" opacity=".55"></line><line x1="100" y1="260" x2="222" y2="150" stroke="#28697a" stroke-width="4.2" opacity=".55"></line><circle cx="232" cy="150" r="16" fill="#28697a"></circle><line x1="252" y1="150" x2="286" y2="150" stroke="#cdc2b3" stroke-width="2.6"></line><polygon points="298,150 284,143 284,157" fill="#cdc2b3"></polygon><rect x="306" y="72" width="146" height="156" rx="9" fill="#f0eae0"></rect><polyline points="318.0,118.5 319.8,120.8 321.5,123.3 323.3,126.0 325.1,128.8 326.9,131.7 328.6,134.4 330.4,136.9 332.2,139.2 333.9,141.1 335.7,142.8 337.5,144.0 339.3,145.0 341.0,145.6 342.8,145.9 344.6,145.9 346.3,145.8 348.1,145.6 349.9,145.3 351.7,145.1 353.4,145.1 355.2,145.2 357.0,145.7 358.7,146.5 360.5,147.6 362.3,149.2 364.1,151.3 365.8,153.7 367.6,156.6 369.4,159.8 371.1,163.3 372.9,166.9 374.7,170.7 376.5,174.5 378.2,178.2 380.0,181.7 381.8,184.8 383.5,187.5 385.3,189.6 387.1,191.0 388.9,191.7 390.6,191.6 392.4,190.6 394.2,188.8 395.9,186.1 397.7,182.5 399.5,178.2 401.3,173.1 403.0,167.5 404.8,161.3 406.6,154.7 408.3,148.0 410.1,141.1 411.9,134.3 413.7,127.8 415.4,121.6 417.2,115.9 419.0,110.9 420.7,106.7 422.5,103.4 424.3,100.9 426.1,99.5 427.8,99.1 429.6,99.6 431.4,101.1 433.1,103.6 434.9,106.8 436.7,110.9 438.5,115.5 440.2,120.7 442.0,126.2" fill="none" stroke="#6b6359" stroke-width="3" stroke-linecap="round" opacity=".8"></polyline><polyline points="318.0,127.0 319.8,129.7 321.5,132.5 323.3,135.3 325.1,138.1 326.9,140.7 328.6,143.0 330.4,145.1 332.2,146.8 333.9,148.1 335.7,149.0 337.5,149.6 339.3,149.8 341.0,149.7 342.8,149.4 344.6,148.8 346.3,148.1 348.1,147.4 349.9,146.7 351.7,146.1 353.4,145.7 355.2,145.6 357.0,145.8 358.7,146.4 360.5,147.3 362.3,148.7 364.1,150.5 365.8,152.7 367.6,155.3 369.4,158.1 371.1,161.2 372.9,164.5 374.7,167.8 376.5,171.0 378.2,174.1 380.0,177.0 381.8,179.5 383.5,181.6 385.3,183.1 387.1,184.0 388.9,184.3 390.6,183.8 392.4,182.6 394.2,180.6 395.9,178.0 397.7,174.6 399.5,170.6 401.3,166.0 403.0,161.1 404.8,155.7 406.6,150.1 408.3,144.5 410.1,138.9 411.9,133.4 413.7,128.2 415.4,123.5 417.2,119.3 419.0,115.7 420.7,112.8 422.5,110.6 424.3,109.3 426.1,108.8 427.8,109.1 429.6,110.2 431.4,112.1 433.1,114.6 434.9,117.7 436.7,121.4 438.5,125.5 440.2,129.8 442.0,134.3" fill="none" stroke="#28697a" stroke-width="2.6" stroke-dasharray="8 5" stroke-linecap="round"></polyline><text x="20" y="314" font-family="'JetBrains Mono',monospace" font-size="30" font-weight="600" fill="#28697a">x<tspan font-size="19" dy="7">t</tspan></text><text x="379" y="314" font-family="'IBM Plex Sans',system-ui,sans-serif" font-size="26" font-weight="500" fill="#6b6359" text-anchor="middle">prediction</text></svg>
+      </div>
+    </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:16px;min-height:0;">
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;flex:none;">
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b6359;border-bottom:1px solid #e2dad0;padding-bottom:10px;">why reservoir computing</div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#28697a;border-bottom:1px solid #e2dad0;padding-bottom:10px;">why build the reservoir on a quantum device</div>
+      </div>
+      <div style="flex:1;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:minmax(0,1fr);gap:20px;min-height:0;">
+        <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;overflow:hidden;">
+          <svg viewBox="0 0 380 92" style="height:74px;width:auto;max-width:100%;flex:none;" role="img" aria-hidden="true"><rect x="16" y="30" width="348" height="30" rx="10" fill="rgba(107,99,89,.20)"></rect><rect x="300" y="30" width="64" height="30" rx="10" fill="#28697a"></rect><line x1="300" y1="22" x2="300" y2="68" stroke="#cdc2b3" stroke-width="2" stroke-dasharray="4 4"></line><polygon points="332,80 324,68 340,68" fill="#28697a"></polygon></svg>
+          <div style="font:600 27px/1.15 'IBM Plex Sans',system-ui,sans-serif;color:#2f2b27;">One linear fit</div>
+          <div style="font:400 24px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6359;text-wrap:pretty;">Only the readout is trained — closed form, no backprop.</div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;overflow:hidden;">
+          <svg viewBox="0 0 380 92" style="height:74px;width:auto;max-width:100%;flex:none;" role="img" aria-hidden="true"><line x1="16" y1="76" x2="364" y2="76" stroke="#e2dad0" stroke-width="2"></line><rect x="22" y="14" width="26" height="62" rx="4" fill="#28697a"></rect><rect x="74" y="43.1" width="26" height="32.9" rx="4" fill="rgba(107,99,89,.28)"></rect><rect x="122" y="54.4" width="26" height="21.6" rx="4" fill="rgba(107,99,89,.28)"></rect><rect x="170" y="61.8" width="26" height="14.2" rx="4" fill="rgba(107,99,89,.28)"></rect><rect x="218" y="66.7" width="26" height="9.3" rx="4" fill="rgba(107,99,89,.28)"></rect><rect x="266" y="69.9" width="26" height="6.1" rx="4" fill="rgba(107,99,89,.28)"></rect><rect x="314" y="72.0" width="26" height="4.0" rx="4" fill="rgba(107,99,89,.28)"></rect><polyline points="35,14.0 83,35.3 131,49.2 179,58.4 227,64.4 275,68.4 323,71.0" fill="none" stroke="#8c5731" stroke-width="2.2" stroke-dasharray="6 4"></polyline></svg>
+          <div style="font:600 27px/1.15 'IBM Plex Sans',system-ui,sans-serif;color:#2f2b27;">Memory for free</div>
+          <div style="font:400 24px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6359;text-wrap:pretty;">The state already carries the whole input history.</div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;overflow:hidden;">
+          <svg viewBox="0 0 380 92" style="height:74px;width:auto;max-width:100%;flex:none;" role="img" aria-hidden="true"><circle cx="46" cy="47" r="6.5" fill="#28697a" opacity="0.45"></circle><line x1="72" y1="46" x2="108" y2="46" stroke="#cdc2b3" stroke-width="2"></line><polygon points="120,46 106,39 106,53" fill="#cdc2b3"></polygon><circle cx="146" cy="38" r="6.5" fill="#28697a" opacity="0.59"></circle><circle cx="146" cy="56" r="6.5" fill="#28697a" opacity="0.59"></circle><line x1="172" y1="46" x2="208" y2="46" stroke="#cdc2b3" stroke-width="2"></line><polygon points="220,46 206,39 206,53" fill="#cdc2b3"></polygon><circle cx="246" cy="20" r="6.5" fill="#28697a" opacity="0.73"></circle><circle cx="246" cy="38" r="6.5" fill="#28697a" opacity="0.73"></circle><circle cx="246" cy="56" r="6.5" fill="#28697a" opacity="0.73"></circle><circle cx="246" cy="74" r="6.5" fill="#28697a" opacity="0.73"></circle><line x1="272" y1="46" x2="308" y2="46" stroke="#cdc2b3" stroke-width="2"></line><polygon points="320,46 306,39 306,53" fill="#cdc2b3"></polygon><circle cx="336" cy="20" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="336" cy="38" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="336" cy="56" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="336" cy="74" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="356" cy="20" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="356" cy="38" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="356" cy="56" r="6.5" fill="#28697a" opacity="0.87"></circle><circle cx="356" cy="74" r="6.5" fill="#28697a" opacity="0.87"></circle></svg>
+          <div style="font:600 27px/1.15 'IBM Plex Sans',system-ui,sans-serif;color:#28697a;">Exponential state space</div>
+          <div style="font:400 24px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6359;text-wrap:pretty;">Every qubit doubles the amplitudes — many features, few qubits.</div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;overflow:hidden;">
+          <svg viewBox="0 0 380 92" style="height:74px;width:auto;max-width:100%;flex:none;" role="img" aria-hidden="true"><circle cx="76" cy="46" r="30" fill="none" stroke="rgba(107,99,89,.45)" stroke-width="3" stroke-dasharray="46 14"></circle><polygon points="106,40 92,32 96,48" fill="rgba(107,99,89,.45)"></polygon><line x1="46" y1="76" x2="106" y2="16" stroke="#8c5731" stroke-width="4" stroke-linecap="round"></line><line x1="164" y1="46" x2="300" y2="46" stroke="#28697a" stroke-width="3"></line><rect x="214" y="26" width="40" height="40" rx="8" fill="rgba(40,105,122,.18)" stroke="#28697a" stroke-width="2.4"></rect><polygon points="316,46 300,37 300,55" fill="#28697a"></polygon></svg>
+          <div style="font:600 27px/1.15 'IBM Plex Sans',system-ui,sans-serif;color:#28697a;">No variational loop</div>
+          <div style="font:400 24px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6359;text-wrap:pretty;">Nothing inside is optimised: no gradients, no plateaus.</div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <section data-label="Echo state property" data-screen-label="04" data-speaker-notes="TODO: Add reference to https://www.ai.rug.nl/minds/uploads/EchoStatesTechRep.pdf. Echo state property is Definition 1 in this reference. Add point  the next system output, given the input and
+output history. Add maybe a history time line slide how echo state networks and reservoir computing has evolved since the beginning, e.g., liquid state machines.
+
+Update this slide to contain 3 x 3 features: echo state property, fading memory, memory profile, separation, readout accessibility, universality. Add some visual which demonstrates these properties. If it is possible, the slide could also contain a nice trick: when you click the box that contains the high-level name and illustration, the box flips over with a nice visual animation and reveals the mathematical definition. Add references there as well.
+
+https://chatgpt.com/share/6a6c6895-fd94-83ed-8ed6-c62524946d4d" style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:64px 72px;display:flex;flex-direction:column;gap:32px;" data-om-slide-id="387dc46f">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:18px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 04 ·&nbsp;<span style="letter-spacing: 3.12px;">BACKground</span></div>
+        <h2 style="margin:12px 0 0;font:600 52px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Six properties that make a reservoir work</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:22px;min-height:0;">
+
+      <div style="perspective:1600px;min-height:0;cursor:pointer;" role="button" tabindex="0" onClick="{{ f1 }}">
+        <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,.72,.24,1);cursor:pointer;transform:rotateY({{ r1 }}deg);">
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">01 · stability</div>
+            <h3 style="margin:0;font:600 30px/1.1 'Source Serif 4',Georgia,serif;">Echo state property</h3>
+            <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 200 92" style="width:100%;height:100%;max-height:210px;" fill="none">
+                <path d="M6 12 C60 34 96 50 194 55" stroke="#28697a" stroke-width="2.4"></path>
+                <path d="M6 82 C60 68 104 60 194 57" stroke="#8c5731" stroke-width="2.4"></path>
+                <circle cx="6" cy="12" r="4" fill="#28697a"></circle>
+                <circle cx="6" cy="82" r="4" fill="#8c5731"></circle>
+                <path d="M150 20 L150 88" stroke="#c9bfb2" stroke-width="1.4" stroke-dasharray="4 5"></path>
+                <text x="152" y="18" fill="#a89a89" style="font:600 13.5px 'JetBrains Mono',monospace;">forget x₀</text>
+              </svg>
+            </div>
+            <div style="font:500 14px/1.2 'JetBrains Mono',monospace;letter-spacing:.07em;color:#b3a695;">click for definition</div>
+          </div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#2f2b27;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;color:#f6f2ec;cursor:pointer;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#7fb8c4;">echo state property</div>
+            <div style="background:#3b3630;border-radius:8px;padding:14px 16px;"><tex-math display="" size="19px" color="#f0eae0">\bigl\| x_t(x_0^{A},u) - x_t(x_0^{B},u) \bigr\| \to 0</tex-math></div>
+            <p style="margin:0;font:400 17px/1.5 'IBM Plex Sans',system-ui,sans-serif;color:#cfc6ba;text-wrap:pretty;">The state becomes a function of the input history alone: any two initial states wash out under the same drive.</p>
+            <div style="margin-top:auto;font:400 14px/1.5 'JetBrains Mono',monospace;color:#9a8f81;">[1] Lorem ipsum, <i>Consectetur Adipiscing</i>, 2001, Def. 1.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="perspective:1600px;min-height:0;cursor:pointer;" role="button" tabindex="0" onClick="{{ f2 }}">
+        <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,.72,.24,1);cursor:pointer;transform:rotateY({{ r2 }}deg);">
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">02 · continuity</div>
+            <h3 style="margin:0;font:600 30px/1.1 'Source Serif 4',Georgia,serif;">Fading memory</h3>
+            <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 200 92" style="width:100%;height:100%;max-height:210px;" fill="none">
+                <line x1="4" y1="84" x2="196" y2="84" stroke="#e2dad0" stroke-width="1.6"></line>
+                <rect x="6" y="14" width="18" height="70" rx="2" fill="#28697a"></rect>
+                <rect x="32" y="32" width="18" height="52" rx="2" fill="#3c8496"></rect>
+                <rect x="58" y="48" width="18" height="36" rx="2" fill="#5d9fae"></rect>
+                <rect x="84" y="60" width="18" height="24" rx="2" fill="#8ab9c4"></rect>
+                <rect x="110" y="69" width="18" height="15" rx="2" fill="#aecfd6"></rect>
+                <rect x="136" y="75" width="18" height="9" rx="2" fill="#cbe0e4"></rect>
+                <rect x="162" y="79" width="18" height="5" rx="2" fill="#dfeaec"></rect>
+                <text x="6" y="8" fill="#a89a89" style="font:600 13.5px 'JetBrains Mono',monospace;">now</text>
+                <text x="150" y="8" fill="#a89a89" style="font:600 13.5px 'JetBrains Mono',monospace;">t − k</text>
+              </svg>
+            </div>
+            <div style="font:500 14px/1.2 'JetBrains Mono',monospace;letter-spacing:.07em;color:#b3a695;">click for definition</div>
+          </div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#2f2b27;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;color:#f6f2ec;cursor:pointer;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#7fb8c4;">fading memory</div>
+            <div style="background:#3b3630;border-radius:8px;padding:14px 16px;"><tex-math display="" size="19px" color="#f0eae0">u^{A}_{t-k}\!=\!u^{B}_{t-k}\ \forall k\le K \Rightarrow \|x^{A}_t - x^{B}_t\| &lt; \varepsilon</tex-math></div>
+            <p style="margin:0;font:400 17px/1.5 'IBM Plex Sans',system-ui,sans-serif;color:#cfc6ba;text-wrap:pretty;">The filter is continuous in a weighted-history norm: recent inputs dominate, distant ones decay smoothly.</p>
+            <div style="margin-top:auto;font:400 14px/1.5 'JetBrains Mono',monospace;color:#9a8f81;">[2] Dolor Sit &amp; Amet, <i>Sed Do Eiusmod</i>, 1996.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="perspective:1600px;min-height:0;cursor:pointer;" role="button" tabindex="0" onClick="{{ f3 }}">
+        <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,.72,.24,1);cursor:pointer;transform:rotateY({{ r3 }}deg);">
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">03 · capacity</div>
+            <h3 style="margin:0;font:600 30px/1.1 'Source Serif 4',Georgia,serif;">Memory profile</h3>
+            <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 200 92" style="width:100%;height:100%;max-height:210px;" fill="none">
+                <path d="M10 18 C48 20 70 34 96 54 C124 74 156 82 190 84 L190 84 L10 84 Z" fill="#dfeaec"></path>
+                <path d="M10 18 C48 20 70 34 96 54 C124 74 156 82 190 84" stroke="#28697a" stroke-width="2.6"></path>
+                <line x1="10" y1="84" x2="194" y2="84" stroke="#c9bfb2" stroke-width="1.6"></line>
+                <line x1="10" y1="10" x2="10" y2="84" stroke="#c9bfb2" stroke-width="1.6"></line>
+                <text x="14" y="8" fill="#a89a89" style="font:600 13.5px 'JetBrains Mono',monospace;">m(k)</text>
+                <text x="172" y="76" fill="#a89a89" style="font:600 13.5px 'JetBrains Mono',monospace;">k</text>
+              </svg>
+            </div>
+            <div style="font:500 14px/1.2 'JetBrains Mono',monospace;letter-spacing:.07em;color:#b3a695;">click for definition</div>
+          </div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#2f2b27;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;color:#f6f2ec;cursor:pointer;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#7fb8c4;">memory capacity</div>
+            <div style="background:#3b3630;border-radius:8px;padding:14px 16px;"><tex-math display="" size="19px" color="#f0eae0">MC=\sum_{k\ge1} m(k),\quad m(k)=\frac{\mathrm{cov}^2(u_{t-k},\hat{y}_t)}{\sigma^2_u\,\sigma^2_{\hat y}}</tex-math></div>
+            <p style="margin:0;font:400 17px/1.5 'IBM Plex Sans',system-ui,sans-serif;color:#cfc6ba;text-wrap:pretty;">How well delay k can be linearly recovered from the state. Bounded by the number of readout observables.</p>
+            <div style="margin-top:auto;font:400 14px/1.5 'JetBrains Mono',monospace;color:#9a8f81;">[3] Tempor Incididunt et al., <i>Ut Labore</i>, 2002.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="perspective:1600px;min-height:0;cursor:pointer;" role="button" tabindex="0" onClick="{{ f4 }}">
+        <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,.72,.24,1);cursor:pointer;transform:rotateY({{ r4 }}deg);">
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">04 · expressivity</div>
+            <h3 style="margin:0;font:600 30px/1.1 'Source Serif 4',Georgia,serif;">Separation</h3>
+            <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 200 92" style="width:100%;height:100%;max-height:210px;" fill="none">
+                <path d="M6 24 l8 -8 l8 14 l8 -12 l8 10 l8 -6" stroke="#28697a" stroke-width="2.2"></path>
+                <path d="M6 70 l8 -6 l8 12 l8 -14 l8 8 l8 -4" stroke="#8c5731" stroke-width="2.2"></path>
+                <path d="M64 46 L94 46" stroke="#c9bfb2" stroke-width="2"></path>
+                <path d="M88 41 L95 46 L88 51 Z" fill="#c9bfb2"></path>
+                <rect x="104" y="8" width="90" height="76" rx="8" stroke="#e2dad0" stroke-width="1.6"></rect>
+                <circle cx="126" cy="28" r="5" fill="#28697a"></circle>
+                <circle cx="136" cy="22" r="3.4" fill="#28697a" opacity="0.55"></circle>
+                <circle cx="120" cy="38" r="3.4" fill="#28697a" opacity="0.55"></circle>
+                <circle cx="170" cy="66" r="5" fill="#8c5731"></circle>
+                <circle cx="160" cy="72" r="3.4" fill="#8c5731" opacity="0.55"></circle>
+                <circle cx="176" cy="55" r="3.4" fill="#8c5731" opacity="0.55"></circle>
+              </svg>
+            </div>
+            <div style="font:500 14px/1.2 'JetBrains Mono',monospace;letter-spacing:.07em;color:#b3a695;">click for definition</div>
+          </div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#2f2b27;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;color:#f6f2ec;cursor:pointer;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#7fb8c4;">separation property</div>
+            <div style="background:#3b3630;border-radius:8px;padding:14px 16px;"><tex-math display="" size="19px" color="#f0eae0">u^{A}\neq u^{B} \;\Longrightarrow\; x(u^{A}) \neq x(u^{B})</tex-math></div>
+            <p style="margin:0;font:400 17px/1.5 'IBM Plex Sans',system-ui,sans-serif;color:#cfc6ba;text-wrap:pretty;">Distinct input histories are mapped to distinguishable states — the feature map must not collapse them.</p>
+            <div style="margin-top:auto;font:400 14px/1.5 'JetBrains Mono',monospace;color:#9a8f81;">[4] Magna Aliqua, <i>Enim ad Minim</i>, 2004.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="perspective:1600px;min-height:0;cursor:pointer;" role="button" tabindex="0" onClick="{{ f5 }}">
+        <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,.72,.24,1);cursor:pointer;transform:rotateY({{ r5 }}deg);">
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">05 · access</div>
+            <h3 style="margin:0;font:600 30px/1.1 'Source Serif 4',Georgia,serif;">Readout accessibility</h3>
+            <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 200 92" style="width:100%;height:100%;max-height:210px;" fill="none">
+                <circle cx="46" cy="46" r="40" stroke="#e2dad0" stroke-width="1.6"></circle>
+                <circle cx="30" cy="30" r="3.2" fill="#c9bfb2"></circle>
+                <circle cx="58" cy="24" r="3.2" fill="#c9bfb2"></circle>
+                <circle cx="22" cy="56" r="3.2" fill="#c9bfb2"></circle>
+                <circle cx="46" cy="46" r="3.2" fill="#c9bfb2"></circle>
+                <circle cx="62" cy="62" r="3.2" fill="#c9bfb2"></circle>
+                <circle cx="70" cy="42" r="5" fill="#28697a"></circle>
+                <circle cx="52" cy="70" r="5" fill="#28697a"></circle>
+                <circle cx="56" cy="18" r="5" fill="#28697a"></circle>
+                <path d="M70 42 L136 46 M52 70 L136 50 M56 18 L136 42" stroke="#28697a" stroke-width="1.6"></path>
+                <rect x="136" y="34" width="54" height="24" rx="5" fill="#2f2b27"></rect>
+                <text x="150" y="50" fill="#f6f2ec" style="font:700 14px 'JetBrains Mono',monospace;">W_out</text>
+              </svg>
+            </div>
+            <div style="font:500 14px/1.2 'JetBrains Mono',monospace;letter-spacing:.07em;color:#b3a695;">click for definition</div>
+          </div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#2f2b27;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;color:#f6f2ec;cursor:pointer;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#7fb8c4;">readout accessibility</div>
+            <div style="background:#3b3630;border-radius:8px;padding:14px 16px;"><tex-math display="" size="19px" color="#f0eae0">\hat y_t = W_{\mathrm{out}}\,s_t,\quad s_t=\bigl(\langle O_i\rangle_{\rho_t}\bigr)_{i=1}^{M}</tex-math></div>
+            <p style="margin:0;font:400 17px/1.5 'IBM Plex Sans',system-ui,sans-serif;color:#cfc6ba;text-wrap:pretty;">Only M measured observables reach the linear readout — the usable state, not the full state, sets performance.</p>
+            <div style="margin-top:auto;font:400 14px/1.5 'JetBrains Mono',monospace;color:#9a8f81;">[5] Veniam Quis, <i>Nostrud Exercitation</i>, 2017.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="perspective:1600px;min-height:0;cursor:pointer;" role="button" tabindex="0" onClick="{{ f6 }}">
+        <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,.72,.24,1);cursor:pointer;transform:rotateY({{ r6 }}deg);">
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">06 · guarantee</div>
+            <h3 style="margin:0;font:600 30px/1.1 'Source Serif 4',Georgia,serif;">Universality</h3>
+            <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 200 92" style="width:100%;height:100%;max-height:210px;" fill="none">
+                <path d="M8 62 C34 12 58 84 84 34 C110 -2 136 74 162 40 C176 22 186 30 194 26" stroke="#c9bfb2" stroke-width="5" stroke-linecap="round"></path>
+                <path d="M8 62 C34 12 58 84 84 34 C110 -2 136 74 162 40 C176 22 186 30 194 26" stroke="#28697a" stroke-width="2.2" stroke-dasharray="7 6"></path>
+                <text x="8" y="88" fill="#a89a89" style="font:600 13.5px 'JetBrains Mono',monospace;">target</text>
+                <text x="140" y="88" fill="#28697a" style="font:600 13.5px 'JetBrains Mono',monospace;">reservoir</text>
+              </svg>
+            </div>
+            <div style="font:500 14px/1.2 'JetBrains Mono',monospace;letter-spacing:.07em;color:#b3a695;">click for definition</div>
+          </div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#2f2b27;border-radius:12px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;color:#f6f2ec;cursor:pointer;">
+            <div style="font:600 16px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#7fb8c4;">universality</div>
+            <div style="background:#3b3630;border-radius:8px;padding:14px 16px;"><tex-math display="" size="19px" color="#f0eae0">\forall\, F,\ \varepsilon&gt;0\ \ \exists\, W_{\mathrm{out}}:\ \sup_{u}\|F(u)-\hat y(u)\|&lt;\varepsilon</tex-math></div>
+            <p style="margin:0;font:400 17px/1.5 'IBM Plex Sans',system-ui,sans-serif;color:#cfc6ba;text-wrap:pretty;">Fading memory plus separation make the reservoir family dense in the causal, time-invariant filters.</p>
+            <div style="margin-top:auto;font:400 14px/1.5 'JetBrains Mono',monospace;color:#9a8f81;">[6] Ullamco Laboris, <i>Nisi ut Aliquip</i>, 2018.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section data-label="The model" data-screen-label="07" data-speaker-notes="The model in three lines: build an input-dependent Hamiltonian, evolve unitarily for tau, then mix a fraction gamma of the ground state back in. That last line is the whole difference between a quantum reservoir and a quantum circuit — it is what gives fading memory. Note eigh instead of expm, and the unitary cache keyed on quantised input level: this is why 600 steps run instantly.
+
+TODO: The code is too dense now. If you are actually writing this in python, I suggest using super clear Qiskit for this. Also, the current code should be commented properly. Add reference to https://qiskit.github.io/qiskit-aer/stubs/qiskit_aer.noise.reset_error.html." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:24px;" data-om-slide-id="c503aaf5">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 07 ·&nbsp;<span style="letter-spacing: 3.12px;">BACKground on quantum reservoir computing</span></div>
+        <h2 style="margin:12px 0 0;font:600 48px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">The dissipative quantum reservoir computing</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.1fr;gap:24px;">
+      <div style="background: #ffffff; border: 1px solid #e2dad0; border-radius: 12px; padding: 34px; display: flex; flex-direction: column; gap: 26px; position: relative">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="font:600 24px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#6f675e;">1. Construct input-dependent Hamiltonian</div>
+          <tex-math display="" size="27px" color="#2f2b27" style="font-size: 36px">H(u_t) = \sum_i h_i X_i + \sum_i J_i Z_i Z_{i+1} + u_t \sum_i w_i Z_i</tex-math>
+          
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="font:600 24px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#6f675e;">2. unitary evolution</div>
+          <tex-math display="" size="27px" color="#2f2b27" style="font-size: 36px">\rho \leftarrow U \rho U^{\dagger}, \qquad U = \exp\!\left(-i\,H(u_t)\,\tau\right)</tex-math>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="font:600 24px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#28697a;">3. Apply the dissipative step, where memory fades</div>
+          <tex-math display="" size="27px" color="#28697a" style="font-size: 36px">\rho \leftarrow (1-\gamma)\,\rho + \gamma\,|0\ldots 0\rangle\langle 0\ldots 0|</tex-math><a href="https://qiskit.github.io/qiskit-aer/stubs/qiskit_aer.noise.reset_error.html" target="_blank" rel="noopener noreferrer" style="font-size: 24px; width: 783px; height: 60px">https://qiskit.github.io/qiskit-aer/stubs/qiskit_aer.noise.reset_error.html</a>
+        </div>
+        
+      <div style="font-size: 24px; line-height: 1; font-family: 'IBM Plex Sans', system-ui, sans-serif; position: absolute; left: 41px; top: 724px"><a href="https://qiskit.github.io/qiskit-aer/stubs/qiskit_aer.noise.reset_error.html"></a><a href="https://qiskit.github.io/qiskit-aer/stubs/qiskit_aer.noise.reset_error.html"></a></div></div>
+      <py-code file="Qiskit reference implementation" hl="15,21,22" size="21">
+        from qiskit.circuit.library import PauliEvolutionGate
+        from qiskit.quantum_info import SparsePauliOp
+        from qiskit_aer.noise import NoiseModel, reset_error
+
+        # 1. Hamiltonian: field + ZZ chain + the input drive
+        def hamiltonian(u):
+            field = [("X", [i], h[i]) for i in range(n)]
+            chain = [("ZZ", [i, i+1], J[i]) for i in range(n-1)]
+            drive = [("Z", [i], u * w[i]) for i in range(n)]
+            return SparsePauliOp.from_sparse_list(
+                field + chain + drive, num_qubits=n)
+
+        # 3. dissipation = reset each qubit with probability gamma
+        noise = NoiseModel()
+        noise.add_all_qubit_quantum_error(reset_error(gamma), "id")
+        sim = AerSimulator(method="density_matrix", noise_model=noise)
+
+        qc = QuantumCircuit(n)
+        for t, u in enumerate(inputs):
+            evo = PauliEvolutionGate(hamiltonian(u), time=tau)
+            qc.append(evo, range(n))   # 2. rho &lt;- U rho U+
+            qc.id(range(n))            # 3. partial reset to |0..0&gt;
+            qc.save_density_matrix(label=f"t{t}")
+      </py-code>
+    </div>
+  </section><section data-label="ESN vs QRC" data-screen-label="05" data-speaker-notes="Both panels are driven by the same Mackey-Glass input, computed live. Rows are features, columns are time.
+
+It's a display choice, not a modelling one — the heatmap is showing you dynamics, not magnitudes.
+
+Why it's needed. The features live on wildly different scales. ⟨Z_i⟩ on a strongly-driven qubit swings over most of [−1,1]; a two-body ⟨Z_iZ_j⟩ or an ⟨X_i⟩ deep in the chain may wobble by 10⁻³ around a near-constant offset. On the ESN side, some units saturate near ±1 while others barely leave zero. Under one shared color scale, three or four rows would carry all the ink and the rest would be flat cream — you'd conclude the reservoir has almost no structure, which is false.
+
+What subtracting the row mean does. A feature's constant offset carries no information for the readout: ridge regression fits an intercept, so any DC component is absorbed for free. The only thing that can encode the input history is the variation around that offset. Plotting v − mean(row), scaled by that row's own spread (the widget uses a robust 97th-percentile deviation, not the max, so a single spike doesn't flatten everything), shows exactly the part of each feature the linear readout can actually use.
+
+The intuition it buys.
+
+Vertical banding = many features responding to the same input event — redundancy, effectively a smaller usable state.
+Rows that differ in texture and timing = genuinely independent features — that's separation made visible.
+Horizontal smear to the right of an event = the input still echoing k steps later — that's fading memory, and turning γ up visibly shortens those trails.
+Comparing panels: the ESN's rows look like smooth low-pass copies of each other; the QRC's ⟨X⟩/⟨ZZ⟩ rows show faster, more varied structure — more distinct temporal filters per unit of state.
+What it deliberately hides. Absolute amplitude, and therefore signal-to-noise. A row that looks vividly structured here may be varying by 10⁻⁴ — on hardware, buried under shot noise. That's a real caveat worth saying aloud when you show it, and it connects to your tracking story: the number of shots decides whether a visually rich feature is measurable at all." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:24px;" data-om-slide-id="11ff1375">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 05 · the paradigm</div><h2 style="margin: 12px 0 0; font: 600 48px/1.08 'Source Serif 4',Georgia,serif; letter-spacing: -0.008em; width: 1403px; height: 92px">Classical and quantum have similarities but also different state spaces</h2>
+        
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+        <div style="font: 600 25px/1.2 'IBM Plex Sans',system-ui,sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #6f675e; width: 423px; height: 60px">feature value vs. its own mean</div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="font:400 25px/1.2 'JetBrains Mono',monospace;color:#8c5731;">below</div>
+          <div style="width:230px;height:19px;border-radius:3px;background:linear-gradient(90deg,#8c5731 0%,#f6f2ec 50%,#28697a 100%);border:1px solid #e2dad0;"></div>
+          <div style="font:400 25px/1.2 'JetBrains Mono',monospace;color:#28697a;">above</div>
+        </div>
+        <div style="font:400 22px/1.2 'IBM Plex Sans',system-ui,sans-serif;color:#8a8177;">each row scaled independently</div>
+      </div>
+    </div>
+    <div style="flex:none;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="font:600 32px/1.1 'Source Serif 4',Georgia,serif;color:#2f2b27;">Classical Echo State Network (ESN)</div>
+        
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="font:600 32px/1.1 'Source Serif 4',Georgia,serif;color:#2f2b27;">Dissipative Quantum Reservoir Computing (QRC)</div>
+        
+      </div>
+    </div>
+    <div style="flex:1;min-height:0;"><esn-vs-qrc></esn-vs-qrc></div>
+    
+  </section>
+
+  <section data-label="The task" data-screen-label="06" data-speaker-notes="TODO: Add reference to https://www.ai.rug.nl/minds/uploads/EchoStatesTechRep.pdf pointing out that Mackey Glass was considered in the very original paper. The dataset parameters in the sliding bar should match the parameters in the code example. Also, I do not understand the last four parameters logged (expect washout, you could keep that). We could simplify the code in that regard. Also, I do not think that u_hi and u_sqe notations match with the previous and the quantile and clip are not necessarily very motivated. You could instead add code that is logging some clear parameters from this dataset. You could also remove Every one of these four numbers.... text and simplify the names for the values above it. For example, what is this q_0,995. No one is able to understand or even see that. The font should be bigger there. The font increase could be possible when you have less code. The code font should also be bigger. 
+
+Mackey-Glass: a delay differential equation, chaotic for tau above about 16.8. Drag tau and watch the target change shape. Point out that the scaling quantile is fitted on the pre-validation slice only — protocol fix 1 in the redset experiment — and that this choice is a logged parameter, not a comment in the code.
+
+every choice becomes a param
+
+Hints removed. Here they are for your speaker notes:
+
+delay τ — the feedback delay in the Mackey-Glass equation. It sets how far back the system's own past drives it; above τ ≈ 16.8 the series becomes chaotic. Higher τ = harder task.
+
+series length T — how many time steps are generated in total. It's split 60% train (first 100 discarded as washout) / validation / rolling test, so T changes the size of every slice at once.
+
+seed — which random realisation you get: the initial history of the series, and the reservoir's random weights. Two runs differing only in seed are different experiments.
+
+horizon h — how far ahead you predict; the target is y[t + h]. Larger h needs longer memory and error grows fast in a chaotic regime.
+
+time step t (the axis, formerly &quot;bin index&quot;) — index of the generated sample, one per integration step of the equation; it runs 0 … T−1 left to right." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:22px;" data-om-slide-id="1ed3d8c5">
+    
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 06 · the pipeline</div>
+        <h2 style="margin:12px 0 0;font:600 48px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Define the learning task</h2>
+      </div>
+      <div style="font: 400 28px/1.5 'IBM Plex Sans',system-ui,sans-serif; color: #6b6359; text-align: right; width: 803px; height: 84px"><tex-math size="28px">\dot{x} = \dfrac{a\,x(t-\tau)}{1 + x(t-\tau)^{n}} - b\,x(t)</tex-math> — chaotic for <tex-math size="28px">\tau \gtrsim 17</tex-math>. Predict <tex-math size="28px">y[t+h]</tex-math>.</div>
+    </div><div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 1.35fr 1fr; gap: 22px; position: relative">
+      <div style="min-height:0;"><mg-lab style="width: 1050px; height: 820px"></mg-lab></div>
+      <py-code file="Example logging" hl="2,3,4,5,10,11,13,14" size="20" style="width: 769px; height: 586px">
+        y = mackey_glass(series_length, tau=17, seed=seed).flatten()
+
+        mlflow.log_param("dataset", dataset)
+        mlflow.log_param("tau", tau)
+        mlflow.log_param("series_length", series_length)
+        mlflow.log_param("seed", seed)
+
+        # protocol fix 1 — input scaling is fitted STRICTLY on data
+        # before the validation slice. Fitting it on the full stream
+        # leaks the test period into preprocessing.
+        u_hi  = np.quantile(y[:val_start], 0.995)
+        u_seq = np.clip(y / u_hi, 0.0, 1.0) * 0.5
+
+        mlflow.log_param("input_scaling/fit_range", "pre_validation")
+        mlflow.log_param("input_scaling/u_hi", float(u_hi))
+        mlflow.log_param("washout", WASHOUT)
+        mlflow.log_param("retrain_every", RETRAIN_EVERY)
+      </py-code>
+    <div style="font-size: 24px; line-height: 1; font-family: 'IBM Plex Sans', system-ui, sans-serif; position: absolute; left: 1101px; top: 649px">The “echo state” approach to analysing and training recurrent neural networks. Herbert Jaeger. 2010.</div></div>
+  </section>
+
+  
+
+  <section data-label="The reservoir, live" data-screen-label="08" data-speaker-notes="Drive gamma down to zero with the amber button. The lower plot is the echo state property being tested directly: the distance between a run started in |0..0&gt; and one started in |1..1&gt;, same input. At gamma = 0.25 it collapses within a few dozen steps. At gamma = 0 it never does. Then push tau up to 1.8 and watch the observables saturate into noise — remember that number, it comes back.
+
+This is pretty good slide. The fonts could be bigger in most of the places though.
+
+Goal: What slide 8 is for, as built: it's the same reservoir shown twice — an observables heatmap (which slide 6 already shows, side by side with the ESN) plus one thing slide 6 doesn't have: a direct empirical test of the echo state property, ‖state(|0…0⟩) − state(|1…1⟩)‖ under identical drive, and the γ=0 case where that distance never collapses.
+
+Δ (the curve). Two runs of the identical reservoir — same qubits, same γ, same τ, same random couplings, same input sequence u — differing in one thing only: the initial density matrix. One starts in |0…0⟩, the other in |1…1⟩. At each step t both are measured into the same feature vector s(t) = (⟨Z_i⟩, ⟨X_i⟩, ⟨Y_i⟩, ⟨Z_iZ_j⟩, …). Δ(t) is the Euclidean norm of the difference between those two feature vectors:
+
+‖Δ(t)‖ = ‖ s_{|0…0⟩}(t) − s_{|1…1⟩}(t) ‖
+
+So it's not a distance between quantum states in trace norm — it's the distance as the readout sees it, in the same observable space the ridge regression is fit on. That's deliberate: what matters for learning is whether the features the readout consumes still depend on where you started.
+
+At t = 0 the two are maximally far apart (opposite computational basis states). Under the same drive, the dissipative part of the map contracts them toward each other at roughly (1−γ) per step; the unitary part alone would not. A straight downward line on the log axis is that geometric contraction; γ = 0 gives a flat line because unitary evolution preserves distances exactly.
+
+The &quot;forgotten&quot; line. A threshold I picked at 10⁻⁶, not a physical constant. It marks where the two trajectories have converged to the point of practical irrelevance: the residual difference in any feature is a millionth of its dynamic range, far below what any realistic shot budget could resolve, and orders of magnitude below the ridge regression's own noise floor. Once the curve crosses it, the reservoir's state is a function of the input history alone — the echo state property, satisfied in practice.
+
+Where the curve crosses it is the useful quantity: that's your washout length. If it crosses at t = 40, discarding the first 100 steps is safe; if it never crosses, no washout is long enough and the run is not reproducible from parameters, since the result depends on an initial state nobody logged." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:22px;" data-om-slide-id="7bd60b71">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 08 · the pipeline</div>
+        <h2 style="margin:12px 0 0;font:600 48px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Running quantum reservoir</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;min-height:0;"><dqrc-lab style="width: 1800px; height: 833px"></dqrc-lab></div>
+  </section>
+
+  <section data-label="Circuit and compilation" data-screen-label="09" data-speaker-notes="On hardware this becomes a Trotterised circuit, and everything about that translation is a provenance category of its own. The same logical model at optimisation level 0 and level 3 gives different depth, different error, different results. Two runs with identical model parameters and different transpiler settings are two different experiments.
+
+" style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:24px;" data-om-slide-id="5b982205">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 09 · the pipeline</div>
+        <h2 style="margin:12px 0 0;font:600 48px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Logging operator, circuit and backend</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:0.82fr 1.18fr;gap:24px;">
+      <div style="display:flex;flex-direction:column;min-height:0;">
+        <div style="flex:1;min-height:0;background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:32px 34px;display:flex;flex-direction:column;gap:18px;">
+          <div style="font:600 26px/1.2 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#6f675e;">what the run must carry</div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:20px 24px;font:400 29px/1.32 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;">
+            <div style="color:#28697a;font:600 25px/1.5 'JetBrains Mono',monospace;">artifact</div><div>QASM3 per circuit · DAG stats · coupling map</div>
+            <div style="color:#28697a;font:600 25px/1.5 'JetBrains Mono',monospace;">transpilation</div><div>depth · cx count · swaps · layout, per optimisation level</div>
+            <div style="color:#28697a;font:600 25px/1.5 'JetBrains Mono',monospace;">transpiler</div><div>opt level · layout &amp; routing method · <span style="font-family:'JetBrains Mono',monospace;font-size:27px;">seed_transpiler</span> · basis gates</div>
+            <div style="color:#28697a;font:600 25px/1.5 'JetBrains Mono',monospace;">mapping</div><div>initial &amp; final layout · readout permutation</div>
+            <div style="color:#28697a;font:600 25px/1.5 'JetBrains Mono',monospace;">backend</div><div>name · version · calibration ts · T1/T2 · gate &amp; readout errors</div>
+            <div style="color:#28697a;font:600 25px/1.5 'JetBrains Mono',monospace;">noise</div><div>noise model JSON + hash · mitigation · shots · <span style="font-family:'JetBrains Mono',monospace;font-size:27px;">seed_simulator</span></div>
+            <div style="color:#28697a;font:600 25px/1.5 'JetBrains Mono',monospace;">versions</div><div>qiskit · qiskit-aer · provider package versions</div>
+          </div>
+        </div>
+      </div>
+      <py-code file="Simulate evolution" hl="4,9,10,11,15" size="22">
+        pm = generate_preset_pass_manager(
+            backend=backend, optimization_level=3,
+            layout_method="sabre", routing_method="sabre",
+            seed_transpiler=1234,        # routing is stochastic: pin it
+        )
+        tqc = pm.run(circuits)
+
+        # the circuit is provenance: keep the QASM, not a screenshot
+        meta = {f"t{i:03d}": {"qasm3":  qasm3.dumps(qc),
+                              "layout": qc.layout.final_index_layout(),
+                              "depth":  qc.depth(), "ops": dict(qc.count_ops())}
+                for i, qc in enumerate(tqc)}
+        mlflow.log_dict(meta, "circuits/transpiled.json")
+
+        # ... and the machine it was compiled for
+        mlflow.log_dict(noise.to_dict(), "backend/noise_model.json")
+        mlflow.log_params({
+            "compilation/optimization_level": 3,
+            "compilation/routing_method":  "sabre",
+            "compilation/seed_transpiler": 1234,
+            "backend/name": backend.name, "execution/shots": shots,
+            "backend/calibration_ts":      props.last_update_date,
+        })
+      </py-code>
+    </div>
+  </section>
+
+  <section data-label="The readout" data-screen-label="10" data-speaker-notes="The reservoir is fixed; only this linear map is refit, periodically, as the rolling origin advances. That is the reservoir-computing selling point. Two protocol points worth stressing: gamma and alpha are selected on a validation slice inside the training period, never on test; and a readout is only ever fitted on samples whose targets were already observable at the origin." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:24px;" data-om-slide-id="bfd69f66">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 10 · the pipeline</div>
+        <h2 style="margin:12px 0 0;font:600 48px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">The readout phase: fitting regression model to the measured values</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.02fr;gap:24px;">
+      <readout-lab style="min-height: 0; width: 1124px; height: 832px"></readout-lab>
+      <py-code file="Readout fitting" hl="2,3,8,16,21,22,23,24" size="21" style="width: 672px; height: 830px">
+        def fit_window(F, h, lo, hi, plo, phi, alpha):
+            model = make_pipeline(
+                StandardScaler(), Ridge(alpha=alpha))
+            model.fit(F[lo:hi], y[lo + h:hi + h])
+            return model.predict(F[plo:phi])
+
+        def rolling_test(F, h, alpha):
+            # reservoir frozen; only the readout refits
+            for origin in range(train_end, T - h,
+                                RETRAIN_EVERY):
+                stop = min(origin + RETRAIN_EVERY, T - h)
+                pred = fit_window(F, h, WASHOUT,
+                                  origin - h + 1,
+                                  origin, stop, alpha)
+
+        # gamma, alpha chosen on VALIDATION, not test
+        best_r2, best_g, best_a = max(
+            (validation_r2(qrc_feats[g], h, a), g, a)
+            for g in GAMMAS for a in ALPHAS)
+
+        mlflow.log_param("readout/gamma", best_g)
+        mlflow.log_param("readout/alpha", best_a)
+        mlflow.log_metric("validation/r2", best_r2)
+        mlflow.log_dict(grid, "readout/val_grid.json")
+      </py-code>
+    </div>
+  </section>
+
+  <section data-label="End to end" data-screen-label="11" data-speaker-notes="Press Run. Six stages, each one writing to the tracking client on the right exactly as the Python writes to MLflow. Total wall clock a couple of seconds. Note the run appears in the panel while it is still RUNNING, and that the DQRC line beats the ESN dashed line — this is the healthy baseline we will break on the next slide." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:22px;" data-om-slide-id="240d63c5">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 11 · the pipeline</div>
+        <h2 style="margin:12px 0 0;font:600 48px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">The whole thing, in one press</h2>
+      </div>
+      <div style="font: 400 24px/1.45 'IBM Plex Sans',system-ui,sans-serif; color: #6b6359; text-align: right">Right-hand panel is a real tracking client. Hit <em style="font-style:normal;color:#2f2b27;">connect MLflow</em> and the same calls go to a live server.</div>
+    </div>
+    <div style="flex:1;min-height:0;"><pipeline-run></pipeline-run></div>
+  </section>
+
+  <section data-label="What must be tracked" data-screen-label="12" data-speaker-notes="This is the QProv taxonomy from Weder et al., filled in with the actual keys this pipeline writes. Walk one column. The point of the four categories is not bureaucracy: it is that a difference in any one of them makes two runs incomparable, and only three of the four are visible in your source file." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:24px;" data-om-slide-id="d7d50e5c">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 12 · the tracking</div>
+        <h2 style="margin:12px 0 0;font:600 48px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Summary of quantum provenance</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
+        <div style="font: 400 24px/1.4 'IBM Plex Sans',system-ui,sans-serif; color: #6b6359; text-align: right">QProv's four categories (Weder et al., 2021), plus the two this study adds.</div>
+        <div style="display:flex;gap:20px;font:600 25px 'JetBrains Mono',monospace;">
+          <span style="color:#28697a;">param</span><span style="color:#71578b;">tag</span><span style="color:#8e5460;">metric</span><span style="color:#8c5731;">artifact</span>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:20px;">
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:28px 30px;display:flex;flex-direction:column;gap:18px;overflow:hidden;">
+        <div style="font:600 29px 'IBM Plex Sans',system-ui,sans-serif;color:#28697a;">Quantum circuit</div>
+        <div style="display:flex;flex-direction:column;gap:14px;font:400 25px/1.3 'JetBrains Mono',monospace;color:#55504a;">
+          <div>used_gates <span style="color:#71578b;">tag</span></div>
+          <div>observable_set <span style="color:#71578b;">tag</span></div>
+          <div>applied_encoding <span style="color:#28697a;">param</span></div>
+          <div>width / depth / size <span style="color:#28697a;">param</span></div>
+          <div>qasm3_per_step <span style="color:#8c5731;">artifact</span></div>
+        </div>
+      </div>
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:28px 30px;display:flex;flex-direction:column;gap:18px;overflow:hidden;">
+        <div style="font:600 29px 'IBM Plex Sans',system-ui,sans-serif;color:#28697a;">Quantum computer</div>
+        <div style="display:flex;flex-direction:column;gap:14px;font:400 25px/1.3 'JetBrains Mono',monospace;color:#55504a;">
+          <div>backend_name / version <span style="color:#28697a;">param</span></div>
+          <div>basis_gates <span style="color:#71578b;">tag</span></div>
+          <div>coupling_map <span style="color:#8c5731;">artifact</span></div>
+          <div>T1 / T2, gate &amp; readout err <span style="color:#8c5731;">artifact</span></div>
+          <div>calibration_timestamp <span style="color:#28697a;">param</span></div>
+        </div>
+      </div>
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:28px 30px;display:flex;flex-direction:column;gap:18px;overflow:hidden;">
+        <div style="font:600 29px 'IBM Plex Sans',system-ui,sans-serif;color:#28697a;">Compilation</div>
+        <div style="display:flex;flex-direction:column;gap:14px;font:400 25px/1.3 'JetBrains Mono',monospace;color:#55504a;">
+          <div>optimization_level <span style="color:#28697a;">param</span></div>
+          <div>layout / routing_method <span style="color:#28697a;">param</span></div>
+          <div>seed_transpiler <span style="color:#28697a;">param</span></div>
+          <div>initial / final_layout <span style="color:#8c5731;">artifact</span></div>
+          <div>swap_count <span style="color:#8e5460;">metric</span></div>
+        </div>
+      </div>
+      <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:12px;padding:28px 30px;display:flex;flex-direction:column;gap:18px;overflow:hidden;">
+        <div style="font:600 29px 'IBM Plex Sans',system-ui,sans-serif;color:#28697a;">Execution</div>
+        <div style="display:flex;flex-direction:column;gap:14px;font:400 25px/1.3 'JetBrains Mono',monospace;color:#55504a;">
+          <div>num_shots <span style="color:#28697a;">param</span></div>
+          <div>seed_simulator <span style="color:#28697a;">param</span></div>
+          <div>error_mitigation <span style="color:#28697a;">param</span></div>
+          <div>noise_model + hash <span style="color:#8c5731;">artifact</span></div>
+          <div>execution_time_s <span style="color:#8e5460;">metric</span></div>
+        </div>
+      </div>
+      <div style="background:#ffffff;border:1px solid #8c5731;border-radius:12px;padding:28px 30px;display:flex;flex-direction:column;gap:18px;overflow:hidden;">
+        <div style="font:600 29px 'IBM Plex Sans',system-ui,sans-serif;color:#8c5731;">Reservoir &amp; readout <span style="font:400 24px 'JetBrains Mono',monospace;color:#6b6359;">this study</span></div>
+        <div style="display:flex;flex-direction:column;gap:14px;font:400 25px/1.3 'JetBrains Mono',monospace;color:#55504a;">
+          <div>n_qubits, evolution τ, γ <span style="color:#28697a;">param</span></div>
+          <div>washout, refit_period <span style="color:#28697a;">param</span></div>
+          <div>ridge_alpha, α grid <span style="color:#28697a;">param</span></div>
+          <div>feature_matrix_hash <span style="color:#71578b;">tag</span></div>
+          <div>validation / test R² <span style="color:#8e5460;">metric</span></div>
+        </div>
+      </div>
+      <div style="background:#ffffff;border:1px solid #8c5731;border-radius:12px;padding:28px 30px;display:flex;flex-direction:column;gap:18px;overflow:hidden;">
+        <div style="font:600 29px 'IBM Plex Sans',system-ui,sans-serif;color:#8c5731;">Data &amp; environment <span style="font:400 24px 'JetBrains Mono',monospace;color:#6b6359;">this study</span></div>
+        <div style="display:flex;flex-direction:column;gap:14px;font:400 25px/1.3 'JetBrains Mono',monospace;color:#55504a;">
+          <div>series τ, length, seed <span style="color:#28697a;">param</span></div>
+          <div>horizon h, scaling q <span style="color:#28697a;">param</span></div>
+          <div>split fractions <span style="color:#28697a;">param</span></div>
+          <div>qiskit / aer / numpy <span style="color:#71578b;">tag</span></div>
+          <div>git commit + dirty <span style="color:#71578b;">tag</span></div>
+        </div>
+      </div>
+    </div>
+    
+  </section>
+
+  
+
+  <section data-label="The failure" data-screen-label="14" data-speaker-notes="Three buttons, in order, and do not skip ahead. Step 1 runs the pipeline exactly as configured — DQRC loses to the classical ESN. Invite the audience to find the bug from the plot and the code. They cannot. Step 2 opens the log: the run says four qubits, tau 0.3, XYZ readouts — eighteen observables — while the artifact it consumed was generated with three qubits, tau 1.8 and no XYZ. The cache key only hashed dataset and split, so this morning's scratch run got served to a different configuration. Step 3 hashes every generating parameter into the key and reruns.
+
+Found it. The run says n_qubits = 4, τ = 0.3, XYZ readouts — 18 observables. The embedding artifact it actually consumed was generated with n_qubits = 3, τ = 1.8, no XYZ. The cache key only hashes dataset + split, so a scratch run's array was served to a different configuration.
+
+The setup — an innocent morning. Before step 1 runs the &quot;real&quot; experiment, poisonCache() simulates something everyone in the room has done: a quick throwaway exploration. It builds embeddings with a scratch configuration — 3 qubits, τ = 2.6, no XYZ readouts, seed 7 — and stores them in the embedding cache. Nothing wrong so far; caching embeddings is exactly the right optimization, since generating them is the expensive part.
+
+The bug — one line, in the key. The cache key is built as dqrc_&lt;dataset&gt;_&lt;split&gt;. That's it. Dataset name and train/val split fraction. The key does not include the physics: number of qubits, τ, which observables, γ, seed. So any two configurations on the same dataset and split are, as far as the cache is concerned, the same thing. This is verbatim protocol fix 2 from redset_experiment.py — &quot;original cache was keyed by dataset name + split only → stale caches&quot;.
+
+The run — a clean hit on the wrong array. Step 1 configures the real experiment properly: 4 qubits, τ = 0.3, XYZ readouts, 18 observables. It computes its cache key, gets dqrc_mackey_glass_..., finds a hit, and loads it. No error, no warning — a cache hit is a success path. So the ridge readout is now fit on a 6-feature array from a 3-qubit, τ = 2.6, Z-only reservoir, while every logged parameter, every plot label and every line of visible code says 4 qubits with 18 features. The dynamics it trained on are a different physical system than the one being reported.
+
+Why the R² collapses to ~0.70. Fewer observables, no X/Y components, and τ = 2.6 sitting far outside the useful regime (long evolution → observables saturate, the echo-state property is degraded — the same effect the slide-08 widget lets you drive by hand). The features carry much less independent temporal information, so the linear readout has far less to work with. The classical ESN, which is unaffected by any of this, wins at ~0.97. The result looks like a scientific finding: &quot;quantum reservoirs underperform classical ones on this task.&quot; It's an infrastructure bug.
+
+Why the plot and the code can't save you. The prediction curve is smooth and plausible — a worse model still tracks a chaotic series roughly. The code is correct: cache lookup, embedding load, scaling, γ/α selection, rolling-origin test all do precisely what they say. The config file is correct. Nothing in the visual or the source contains the contradiction, because the contradiction is between two artifacts, and only one of them is on screen.
+
+Why the log is the witness. The run logs reservoir/n_features_expected = 18 as a param, and reservoir/n_features_actual as a metric measured from the array it actually received — 6. Those two numbers are computed at different points in the pipeline from different sources, which is the whole point: the log holds both sides of a claim that should agree. The pipeline also writes qrc_embeddings/cache_meta.json, which carries a generated_by block from whoever created the array — 3 qubits, τ = 2.6, include_xyz: false, note: &quot;morning scratch run, tau sweep&quot;. Side by side with the run's own params, the mismatch is unmissable. And because the consistency check fails, provenance_self_consistent is tagged false and a diagnostics/provenance_mismatch.txt artifact is written — the run flags itself.
+
+The fix. buggyKey = false switches the key to dqrc_&lt;dataset&gt;_&lt;split&gt;_&lt;hash of all sorted params&gt;. The 4-qubit configuration now computes a key no scratch run can collide with, misses the cache, generates its own embeddings, and scores ~0.98 — beating the ESN. One line, and the &quot;finding&quot; evaporates.
+
+The transferable lesson for the room: the cache key is a provenance statement. If it doesn't hash everything that changes the output, it is silently asserting that things which differ are identical." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:52px 60px;display:flex;flex-direction:column;gap:20px;" data-om-slide-id="42af99fd">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #8c5731;padding-bottom:16px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#8c5731;">Part 4 · 14 · the tracking · live</div>
+        <h2 style="margin: 12px 0 0; font: 600 48px/1.08 'Source Serif 4',Georgia,serif; letter-spacing: -0.008em; width: 770px; height: 65px">Example: detecting failure with logs</h2>
+      </div>
+      
+    </div>
+    <div style="flex:1;min-height:0;"><debug-lab style="width: 1808px; height: 861px"></debug-lab></div>
+  </section>
+
+  
+
+  
+
+  
+
+  <section data-label="Takeaways" data-screen-label="18" data-speaker-notes="Close on the lesson: data collection, infrastructure and debugging are what make reproducibility and scientific integrity possible, and experiment tracking is the cheapest way to get all three. Hand over to Part 5." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:72px 80px;display:flex;flex-direction:column;gap:36px;" data-om-slide-id="1bb449b7">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:18px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 18</div>
+        <h2 style="margin:12px 0 0;font:600 52px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Take away from this use case from experiment tracking perspective</h2>
+      </div>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:26px 40px;align-content:start;">
+      <div style="display:flex;gap:22px;">
+        <div style="font:600 40px/1 'JetBrains Mono',monospace;color:#e2dad0;flex:0 0 auto;">01</div>
+        <div><h3 style="margin:0 0 8px;font:600 29px/1.2 'Source Serif 4',Georgia,serif;color:#28697a;">A reservoir's knowledge is its configuration</h3><p style="margin:0;font:400 22px/1.55 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;text-wrap:pretty;">Nothing inside is trained. There is no weight file to fall back on. Unlogged parameters are lost science.</p></div>
+      </div>
+      <div style="display:flex;gap:22px;">
+        <div style="font:600 40px/1 'JetBrains Mono',monospace;color:#e2dad0;flex:0 0 auto;">02</div>
+        <div><h3 style="margin:0 0 8px;font:600 29px/1.2 'Source Serif 4',Georgia,serif;color:#28697a;">Log the four categories, not your favourites</h3><p style="margin:0;font:400 22px/1.55 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;text-wrap:pretty;">Circuit, computer, compilation, execution. A difference in any one makes two runs incomparable, and three of the four are invisible in your source file.</p></div>
+      </div>
+      <div style="display:flex;gap:22px;">
+        <div style="font:600 40px/1 'JetBrains Mono',monospace;color:#e2dad0;flex:0 0 auto;">03</div>
+        <div><h3 style="margin:0 0 8px;font:600 29px/1.2 'Source Serif 4',Georgia,serif;color:#28697a;">Log what produced the data, not only the data</h3><p style="margin:0;font:400 22px/1.55 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;text-wrap:pretty;">Cached intermediates are where quantum pipelines rot. Hash every generating parameter into the key and record the hash beside the result.</p></div>
+      </div>
+      <div style="display:flex;gap:22px;">
+        <div style="font:600 40px/1 'JetBrains Mono',monospace;color:#e2dad0;flex:0 0 auto;">04</div>
+        <div><h3 style="margin:0 0 8px;font:600 29px/1.2 'Source Serif 4',Georgia,serif;color:#28697a;">Tracking is a debugger, not paperwork</h3><p style="margin:0;font:400 22px/1.55 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;text-wrap:pretty;">We found a real bug in ninety seconds from two logged runs. Nothing else in the toolchain could have found it at all.</p></div>
+      </div>
+      <div style="display:flex;gap:22px;">
+        <div style="font:600 40px/1 'JetBrains Mono',monospace;color:#e2dad0;flex:0 0 auto;">05</div>
+        <div><h3 style="margin:0 0 8px;font:600 29px/1.2 'Source Serif 4',Georgia,serif;color:#28697a;">Always report skill against a classical baseline</h3><p style="margin:0;font:400 22px/1.55 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;text-wrap:pretty;">Persistence, seasonal-naive, and a leaky ESN with the same feature budget — logged in the same run, so the comparison is never assembled from memory.</p></div>
+      </div>
+      <div style="display:flex;gap:22px;">
+        <div style="font:600 40px/1 'JetBrains Mono',monospace;color:#e2dad0;flex:0 0 auto;">06</div>
+        <div><h3 style="margin:0 0 8px;font:600 29px/1.2 'Source Serif 4',Georgia,serif;color:#28697a;">The cost of starting is one pip install</h3><p style="margin:0;font:400 22px/1.55 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;text-wrap:pretty;">There is no threshold of project size below which this is not worth it. The run you cannot reproduce is usually the first one.</p></div>
+      </div>
+    </div>
+    
+  </section><section data-label="Why the log is the witness" data-screen-label="15" data-speaker-notes="Generalise from the bug. Each row is a failure mode where the code is correct, the plot is plausible, and the only witness is the log. Land the closing line: reproducibility is not a virtue you add at submission time, it is a property of the infrastructure you run on every day." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:24px;" data-om-slide-id="3d9d719e" data-deck-skip="">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 15 · the tracking</div>
+        <h2 style="margin:12px 0 0;font:600 48px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Five failures no plot will show you</h2>
+      </div>
+      <div style="font:400 24px/1.45 'IBM Plex Sans',system-ui,sans-serif;color:#6b6359;max-width:520px;text-align:right;">In every row the code runs, the metric is finite, and the figure looks publishable.</div>
+    </div>
+    <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:14px;">
+      <div style="display:grid;grid-template-columns:1.1fr 1.25fr 1.1fr;gap:20px;padding:0 26px;font:600 24px 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#6f675e;">
+        <div>the failure</div><div>what it looks like</div><div>what catches it</div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-height:0;">
+        <div style="background:#ffffff;border:1px solid #8c5731;border-radius:10px;padding:20px 26px;display:grid;grid-template-columns:1.1fr 1.25fr 1.1fr;gap:20px;align-items:center;">
+          <div style="font:600 23px 'IBM Plex Sans',system-ui,sans-serif;color:#8c5731;">Stale embedding cache</div>
+          <div style="font:400 20px/1.45 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;">A quiet regression. The classical baseline wins and you assume the quantum model is weak.</div>
+          <div style="font:400 23px/1.4 'JetBrains Mono',monospace;color:#28697a;">params vs artifact metadata<br><span style="color:#6b6359;">n_features_expected ≠ actual</span></div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:10px;padding:20px 26px;display:grid;grid-template-columns:1.1fr 1.25fr 1.1fr;gap:20px;align-items:center;">
+          <div style="font:600 23px 'IBM Plex Sans',system-ui,sans-serif;color:#2f2b27;">Scaler fitted on the full stream</div>
+          <div style="font:400 20px/1.45 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;">Results <em style="font-style:normal;color:#2f2b27;">improve</em>. That is the tell, and it is the one nobody investigates.</div>
+          <div style="font:400 23px/1.4 'JetBrains Mono',monospace;color:#28697a;">input_scaling/fit_range<br><span style="color:#6b6359;">logged as a param, diffable</span></div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:10px;padding:20px 26px;display:grid;grid-template-columns:1.1fr 1.25fr 1.1fr;gap:20px;align-items:center;">
+          <div style="font:600 23px 'IBM Plex Sans',system-ui,sans-serif;color:#2f2b27;">γ = 0, no fading memory</div>
+          <div style="font:400 20px/1.45 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;">Trains fine, generalises badly, and only on some splits. Looks like bad luck.</div>
+          <div style="font:400 23px/1.4 'JetBrains Mono',monospace;color:#28697a;">reservoir/gammas + val grid<br><span style="color:#6b6359;">γ=0 row is right there</span></div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:10px;padding:20px 26px;display:grid;grid-template-columns:1.1fr 1.25fr 1.1fr;gap:20px;align-items:center;">
+          <div style="font:600 23px 'IBM Plex Sans',system-ui,sans-serif;color:#2f2b27;">Recalibrated backend</div>
+          <div style="font:400 20px/1.45 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;">Yesterday's number will not reproduce today. Same code, same device, same shots.</div>
+          <div style="font:400 23px/1.4 'JetBrains Mono',monospace;color:#28697a;">gate_fidelities artifact<br><span style="color:#6b6359;">snapshot taken per run</span></div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e2dad0;border-radius:10px;padding:20px 26px;display:grid;grid-template-columns:1.1fr 1.25fr 1.1fr;gap:20px;align-items:center;">
+          <div style="font:600 23px 'IBM Plex Sans',system-ui,sans-serif;color:#2f2b27;">Transpiler seed drift</div>
+          <div style="font:400 20px/1.45 'IBM Plex Sans',system-ui,sans-serif;color:#55504a;">Two runs of "the same circuit" differ by 20% in depth and disagree on hardware.</div>
+          <div style="font:400 23px/1.4 'JetBrains Mono',monospace;color:#28697a;">compilation/random_seed<br><span style="color:#6b6359;">+ the QASM artifact</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #e2dad0;padding-top:18px;font:500 25px/1.45 'IBM Plex Sans',system-ui,sans-serif;color:#2f2b27;text-wrap:pretty;">None of these is a quantum problem. All of them are <em style="font-style:normal;color:#28697a;">worse</em> in quantum, because the state space is larger, the hardware drifts daily, and the intermediate data is expensive enough that everyone caches it.</div>
+  </section><section data-label="Tracked sweep" data-screen-label="16" data-speaker-notes="The everyday payoff, not the dramatic one. Nine runs, one click, every point a logged run with its own params and validation grid. Two months from now the question is not what the best number was but which configuration produced it — and the answer is in the store, not in your memory." style="background:#f6f2ec;color:#2f2b27;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:56px 64px;display:flex;flex-direction:column;gap:22px;" data-om-slide-id="08bb632d" data-deck-skip="">
+    <div style="flex:none;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #e2dad0;padding-bottom:16px;">
+      <div>
+        <div style="font:600 24px/1.2 'JetBrains Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#28697a;">Part 4 · 16 · the tracking</div>
+        <h2 style="margin:12px 0 0;font:600 48px/1.08 'Source Serif 4',Georgia,serif;letter-spacing:-0.008em;">Nine runs, one click, all recoverable</h2>
+      </div>
+      <div style="font:400 24px/1.45 'IBM Plex Sans',system-ui,sans-serif;color:#6b6359;max-width:560px;text-align:right;">τ × γ sweep. Each point is a full run: params, validation grid, metrics, artifacts.</div>
+    </div>
+    <div style="flex:1;min-height:0;"><sweep-lab></sweep-lab></div>
+  </section>
+
+</x-import>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;followUrl&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;valteruo.github.io/qrc-tracking&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Hands-on links&quot;},
+  &quot;mlflowUrl&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;http://127.0.0.1:5000&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Hands-on links&quot;},
+  &quot;repoUrl&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;github.com/valterUo/qrc-tracking-tutorial&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Hands-on links&quot;}
+}">
+class Component extends DCLogic {
+  state = { flipped: {} };
+  toggleFlip(i, e) {
+    // Presenting/fullscreen hosts advance slides on a stage click; keep the
+    // tap on the card so flipping never navigates.
+    if (e) { e.preventDefault(); e.stopPropagation(); if (e.nativeEvent) e.nativeEvent.stopImmediatePropagation(); }
+    this.setState(s => ({ flipped: { ...s.flipped, [i]: !s.flipped[i] } }));
+  }
+  renderVals() {
+    const flip = {};
+    for (let i = 1; i <= 6; i++) {
+      flip['f' + i] = (e) => this.toggleFlip(i, e);
+      flip['r' + i] = this.state.flipped[i] ? 180 : 0;
+    }
+    return {
+      ...flip,
+      followUrl: this.props.followUrl ?? 'valteruo.github.io/qrc-tracking',
+      mlflowUrl: this.props.mlflowUrl ?? 'http://127.0.0.1:5000',
+      repoUrl: this.props.repoUrl ?? 'github.com/valterUo/qrc-tracking-tutorial'
+    };
+  }
+}
+
+</script>
+</body>
+</html>
